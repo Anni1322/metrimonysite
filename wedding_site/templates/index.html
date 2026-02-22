@@ -1,0 +1,588 @@
+{% extends "base.html" %}
+
+{% block title %}बिहाव - गोंडवाना वैवाहिक सदस्य सूची{% endblock %}
+
+{% block extra_css %}
+<style type="text/tailwindcss">
+    .profile-card:hover .zoom-img {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <section class="relative min-h-[450px] flex items-center justify-center py-16 px-6">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-black/40 z-10"></div>
+            <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1974&auto=format&fit=crop');"></div>
+        </div>
+        
+        <div class="relative z-20 max-w-5xl w-full text-center">
+            <h2 class="text-white text-3xl md:text-5xl font-extrabold leading-tight mb-8">
+                अपना आदर्श <span class="text-saffron">जीवनसाथी</span> खोजें
+            </h2>
+
+            <form method="GET" class="bg-white/10 backdrop-blur-xl p-2 rounded-2xl border border-white/20 shadow-2xl">
+                <div class="bg-white dark:bg-background-dark rounded-xl p-4 flex flex-wrap lg:flex-nowrap items-end gap-4">
+                    
+                    <div class="flex-1 min-w-[200px] text-left">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">नाम या क्रमांक</label>
+                        <input type="text" name="search" value="{{ search_query }}" placeholder="उदा. राहुल या 101" 
+                               class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-lg h-12 text-sm focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <div class="flex-1 min-w-[200px] text-left">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">गोत्र द्वारा फिल्टर</label>
+                        <input type="text" name="gotra" value="{{ gotra_filter }}" placeholder="अपना गोत्र लिखें" 
+                               class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-lg h-12 text-sm focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <div class="flex gap-2 w-full lg:w-auto">
+                        <button type="submit" class="flex-1 lg:w-auto bg-primary hover:bg-primary/90 text-white font-bold h-12 px-8 rounded-lg flex items-center justify-center gap-2 transition-all">
+                            <span class="material-symbols-outlined">search</span> खोजें
+                        </button>
+                        <a href="{% url 'biodata_list' %}" class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 h-12 px-4 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-all">
+                            <span class="material-symbols-outlined">undo</span>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white dark:bg-background-dark traditional-pattern relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-primary">सदस्य प्रोफाइल</h3>
+                    <p class="text-gray-500 text-sm mt-1">सत्यापित गोंडवाना समुदाय के सदस्य</p>
+                </div>
+                <div class="hidden md:block text-xs font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-full border border-gray-100 dark:border-white/10">
+                    कुल {{ profiles|length }} परिणाम
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {% for profile in profiles %}
+                <div class="profile-card group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-700 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col hover:scale-105">
+                    
+                    <div class="relative h-72 w-full overflow-hidden">
+                        {% if profile.profile_photo %}
+                            <img src="{{ profile.profile_photo.url }}" alt="{{ profile.full_name }}" class="zoom-img w-full h-full object-cover transition-transform duration-700">
+                        {% else %}
+                            <div class="w-full h-full bg-gray-50 dark:bg-white/5 flex flex-col items-center justify-center text-gray-300">
+                                <span class="material-symbols-outlined text-6xl">person_celebration</span>
+                                <p class="text-[10px] font-bold uppercase mt-2">फोटो उपलब्ध नहीं है</p>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                            <span class="material-symbols-outlined text-primary text-xs font-bold">verified</span>
+                            <span class="text-[10px] font-extrabold text-gray-800">Verified</span>
+                        </div>
+
+                        <div class="absolute bottom-0 left-0 bg-primary/90 backdrop-blur-md text-white px-4 py-1.5 text-xs font-bold rounded-tr-xl">
+                            #{{ profile.serial_number }}
+                        </div>
+                    </div>
+
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h4 class="text-lg font-extrabold text-[#181112] dark:text-white mb-4 group-hover:text-primary transition-colors">
+                            {{ profile.full_name }}
+                        </h4>
+                        
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                <span class="material-symbols-outlined text-saffron text-lg">fingerprint</span>
+                                <span>गोत्र: <b class="text-gray-800 dark:text-white">{{ profile.gotra }}</b></span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                <span class="material-symbols-outlined text-primary text-lg">workspace_premium</span>
+                                <span class="truncate">शिक्षा: <b class="text-gray-800 dark:text-white">{{ profile.education|truncatechars:18 }}</b></span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                <span class="material-symbols-outlined text-gold text-lg">event_available</span>
+                                <span>जन्म: <b class="text-gray-800 dark:text-white">{{ profile.date_of_birth|date:"d M Y" }}</b></span>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'biodata_detail' pk=profile.pk %}" class="mt-auto w-full group/btn relative bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 overflow-hidden shadow-md hover:shadow-lg">
+                            <span class="relative z-10 flex items-center gap-2">पूरा बायोडाटा देखें <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full py-24 text-center">
+                    <div class="bg-gray-50 dark:bg-white/5 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-5xl text-gray-300">person_search</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-500">कोई प्रोफाइल नहीं मिली</h3>
+                    <p class="text-gray-400 mt-2">कृपया कुछ और खोजें या फिल्टर रीसेट करें।</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-background-dark text-white pt-16 pb-8 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <div class="flex items-center justify-center gap-2 mb-6">
+            <div class="bg-primary text-white p-1 rounded-lg">
+                <span class="material-symbols-outlined">temple_hindu</span>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight">बिहाव</h2>
+        </div>
+        <p class="text-gray-500 text-sm max-w-md mx-auto mb-10">
+            गोंडवाना समुदाय के लिए एक समर्पित वैवाहिक मंच। विश्वास, परंपरा और आधुनिकता का संगम।
+        </p>
+        <div class="pt-8 border-t border-white/5 text-xs text-gray-600">
+            © 2026 बिहाव मैट्रिमोनियल सर्विसेज। सर्वाधिकार सुरक्षित।
+        </div>
+    </div>
+
+<a href="{% url 'biodata_create' %}" class="fixed bottom-8 right-8 w-14 h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 group z-50">
+    <span class="material-symbols-outlined text-2xl transition-transform group-hover:rotate-90">add</span>
+</a>
+
+{% endblock %}
+
+
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gondwana Vaivahik List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #10b981; /* Emerald green for nature theme */
+            --secondary-color: #f0fdf4; /* Light green */
+            --accent-color: #059669; /* Darker green */
+            --text-color: #1f2937;
+            --bg-gradient: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin: 30px 0;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .form-control {
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 200px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 6px solid var(--primary-color);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #f9fafb;
+            position: relative;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .card-img-container:hover .card-img {
+            transform: scale(1.05);
+        }
+
+        .no-img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            color: #9ca3af;
+            font-size: 1rem;
+            font-weight: 400;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .no-img-placeholder i {
+            font-size: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title span {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .card hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+            margin: 15px 0;
+        }
+
+        .card p {
+            margin: 8px 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card p strong {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background-color: var(--primary-color);
+            width: 100%;
+            text-align: center;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .btn-success:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .empty-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 40px;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #ef4444;
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .fab:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .search-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .form-control {
+                min-width: auto;
+            }
+            h2 {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 5px;
+            }
+            .fab {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+     {% include 'header.html' %}
+    <h2>
+        <i class="fas fa-leaf"></i>
+        गोंडवाना वैवाहिक ग्रुप - सदस्य सूची
+        <i class="fas fa-leaf"></i>
+    </h2>
+
+    <form method="GET" class="search-box">
+        <input type="text" name="search" class="form-control" placeholder="नाम या क्रमांक खोजें..." value="{{ search_query }}">
+        <input type="text" name="gotra" class="form-control" placeholder="गोत्र द्वारा फ़िल्टर करें..." value="{{ gotra_filter }}">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i> खोजें
+        </button>
+        <a href="{% url 'biodata_list' %}" class="btn btn-secondary">
+            <i class="fas fa-undo"></i> रीसेट
+        </a>
+    </form>
+
+    <div class="grid">
+        {% for profile in profiles %}
+            <div class="card">
+                <div class="card-img-container">
+                    {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" alt="{{ profile.full_name }}" class="card-img">
+                    {% else %}
+                        <div class="no-img-placeholder">
+                            <i class="fas fa-user-circle"></i>
+                            फोटो उपलब्ध नहीं है
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-title">
+                    <i class="fas fa-user"></i>
+                    {{ profile.full_name }}
+                    <span>(#{{ profile.serial_number }})</span>
+                </div>
+                <hr>
+                <p><i class="fas fa-dna"></i><strong>गोत्र:</strong> {{ profile.gotra }}</p>
+                <p><i class="fas fa-graduation-cap"></i><strong>शिक्षा:</strong> {{ profile.education|truncatechars:30 }}</p>
+                <p><i class="fas fa-birthday-cake"></i><strong>DOB:</strong> {{ profile.date_of_birth|date:"d M Y" }}</p>
+                <a href="{% url 'biodata_detail' pk=profile.pk %}" class="btn btn-success">
+                    <i class="fas fa-eye"></i> पूरा बायोडाटा देखें
+                </a>
+            </div>
+        {% empty %}
+            <p class="empty-message">
+                <i class="fas fa-search-minus"></i>
+                कोई प्रोफ़ाइल नहीं मिली।
+            </p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'biodata_create' %}" class="fab" title="नया बायोडाटा जोड़ें">
+        <i class="fas fa-plus"></i>
+    </a>
+{% endblock %}
+ {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gondwana Vaivahik List</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; padding: 20px; }
+        .search-box {
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px;
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .form-control { padding: 10px; border: 1px solid #ddd; border-radius: 4px; flex: 1; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; color: white; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #007bff; }
+        .btn-success { background-color: #28a745; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #28a745; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card-title { font-size: 1.2em; font-weight: bold; color: #333; }
+
+        /* --- New Image Styles --- */
+        .card-img-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #eee;
+        }
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Keeps aspect ratio without stretching */
+        }
+        .no-img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9ecef;
+            color: #999;
+            font-size: 0.9em;
+        }
+        /* ------------------------- */
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center; color: #28a745;">🌿 गोंडवाना वैवाहिक ग्रुप - सदस्य सूची 🌿</h2>
+
+    <form method="GET" class="search-box">
+        <input type="text" name="search" class="form-control" placeholder="Search Name or Serial No..." value="{{ search_query }}">
+        <input type="text" name="gotra" class="form-control" placeholder="Filter by Gotra..." value="{{ gotra_filter }}">
+        <button type="submit" class="btn btn-primary">🔍 खोजें</button>
+        <a href="{% url 'biodata_list' %}" class="btn" style="background: #6c757d;">Reset</a>
+    </form>
+
+    <div class="grid">
+        {% for profile in profiles %}
+            <div class="card">
+                <div class="card-img-container">
+                    {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" alt="{{ profile.full_name }}" class="card-img">
+                    {% else %}
+                        <div class="no-img-placeholder">फोटो उपलब्ध नहीं है</div>
+                    {% endif %}
+                </div>
+
+                <div class="card-title">{{ profile.full_name }} <span style="font-size: 0.8em; color: #777;">(#{{ profile.serial_number }})</span></div>
+                <hr>
+                <p><strong>गोत्र:</strong> {{ profile.gotra }}</p>
+                <p><strong>शिक्षा:</strong> {{ profile.education|truncatechars:30 }}</p>
+                <p><strong>DOB:</strong> {{ profile.date_of_birth|date:"d M Y" }}</p>
+                <a href="{% url 'biodata_detail' pk=profile.pk %}" class="btn btn-success" style="width: 90%; text-align: center; display: block; margin: 10px auto;">📄 पूरा बायोडाटा देखें</a>
+            </div>
+        {% empty %}
+            <p style="grid-column: 1/-1; text-align: center;">No profiles found.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'biodata_create' %}" style="position: fixed; bottom: 30px; right: 30px; background: #d32f2f; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">+</a>
+{% endblock %} {% endcomment %}

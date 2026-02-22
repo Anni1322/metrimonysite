@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
+        <div class="text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900">नया खाता बनाएं</h2>
+            <p class="mt-2 text-sm text-gray-600">गोंडवाना वैवाहिक समुदाय का हिस्सा बनें</p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST">
+            {% csrf_token %}
+            <div class="space-y-4">
+                {% for field in form %}
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/30">
+                रजिस्टर करें
+            </button>
+        </form>
+        <p class="text-center text-sm text-gray-500">
+            पहले से खाता है? <a href="{% url 'pages_login' %}" class="text-primary font-bold">लॉगिन करें</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

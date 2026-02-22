@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Chat</h1>
+<ul>
+    {% for message in messages %}
+        <li>{{ message.sender.username }}: {{ message.content }}</li>
+    {% endfor %}
+</ul>
+<form method="post">
+    {% csrf_token %}
+    <textarea name="content" placeholder="Type a message"></textarea>
+    <button type="submit">Send</button>
+</form>
+{% endblock %}

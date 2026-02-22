@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}बायोडाटा #{{ profile.serial_number }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .biodata-card {
+        background-color: white;
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        line-height: 1.6;
+        color: #111;
+        margin: 20px auto;
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #008000;
+        font-weight: bold;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+    }
+    .serial-no {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .row-item {
+        margin-bottom: 8px;
+    }
+    .label {
+        font-weight: bold;
+    }
+    .footer-note {
+        margin-top: 20px;
+        font-style: italic;
+        font-size: 0.9em;
+        color: #555;
+        background-color: #fff3cd;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ffeeba;
+    }
+    .icon {
+        margin-right: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="biodata-card">
+    <div class="header">
+        *गोंडवाना वैवाहिक ग्रुप 750 (नि:शुल्क बायोडाटा) {{ profile.created_at|date:"Y" }}*
+    </div>
+    
+    <div class="serial-no">
+        *सरल क्रमांक {{ profile.serial_number }}*
+    </div>
+
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">नाम :-</span> {{ profile.full_name }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">जाति :-</span> {{ profile.caste }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">गोत्र :-</span> {{ profile.gotra }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">देव संख्या :-</span> {{ profile.deity_number }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">पिता का नाम :-</span> {{ profile.father_name }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">माता का नाम :-</span> {{ profile.mother_name }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">रंग :-</span> {{ profile.complexion }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">कद :-</span> {{ profile.height }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">जन्मतिथि :-</span> {{ profile.date_of_birth|date:"d/m/Y" }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">मामा का गोत्र :-</span> {{ profile.maternal_uncle_gotra }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">शिक्षा :-</span> {{ profile.education }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">वर्तमान व्यवसाय :-</span> {{ profile.occupation }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">पारिवारिक स्थिति :-</span> {{ profile.family_status }}</div>
+    
+    <div class="row-item"><span class="icon">▶️</span> <span class="label">पूरा पता (वर्तमान व स्थाई) :-</span> {{ profile.address }}</div>
+    
+    <div class="row-item">
+        <span class="icon">▶️</span> <span class="label">पालक या रिश्तेदार का मोबाईल नंबर :-</span> 
+        {% if user.is_staff %}
+            {{ profile.guardian_mobile }}
+        {% else %}
+            एडमिन से संपर्क करें।
+        {% endif %}
+    </div>
+
+    <div style="margin-top: 15px; font-size: 0.9em;">
+        *(अब जिन्हें भी रिश्ते की बात करना होगा, वे एडमिन से संपर्क नंबर लेंगे।)*
+    </div>
+
+    <div class="footer-note">
+        *टीप :- ग्रुप में पोष्ट किये गये लड़का-लड़की का रिश्ता तय होने पर ग्रुप एडमिन को अवश्य सूचित करेंगे।*
+    </div>
+
+</div>
+
+{% endblock %}

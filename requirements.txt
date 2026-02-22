@@ -1,0 +1,6 @@
+Django==4.2
+Pillow==10.0.0  # For image handling
+django-filter==23.2  # For filtering (e.g., matches)
+djangorestframework==3.14.0  # Optional, for API views if needed
+psycopg2==2.9.7  # If using PostgreSQL (recommended for GIS)
+django-cors-headers==4.3.1

@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% block title %}बायोडाटा - {{ profile.full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-red: #d41132;
+        --saffron: #FF9933;
+        --card-bg: #ffffff;
+        --text-main: #1f2937;
+        --border-color: #f3f4f6;
+    }
+
+    .biodata-container {
+        perspective: 1000px;
+        padding: 40px 20px;
+    }
+
+    .biodata-card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+        max-width: 850px;
+        margin: 0 auto;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Traditional Header Style */
+    .bio-header {
+        background: linear-gradient(135deg, var(--primary-red), #b00e2a);
+        padding: 30px;
+        text-align: center;
+        color: white;
+    }
+
+    .bio-header h2 {
+        font-weight: 800;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .serial-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 4px 15px;
+        border-radius: 99px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+        backdrop-filter: blur(5px);
+    }
+675
+    /* Photo Section */
+    .bio-photo-section {
+        margin-top: -60px;
+        text-align: center;
+        position: relative;
+        z-index: 10;
+    }
+
+    .bio-img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 30px;
+        border: 6px solid white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        background: #f3f4f6;
+    }
+
+    .bio-img-placeholder {
+        width: 180px;
+        height: 180px;
+        background: #f9fafb;
+        border: 2px dashed #d1d5db;
+        border-radius: 30px;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+    }
+
+    /* Fields Layout */
+    .bio-content {
+        padding: 40px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .info-box {
+        background: #fcfcfc;
+        border: 1px solid #f8f8f8;
+        padding: 15px 20px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .info-box:hover {
+        background: #fffafa;
+        border-color: var(--primary-red);
+        transform: translateY(-2px);
+    }
+
+    .info-box i {
+        color: var(--primary-red);
+        font-size: 1.2rem;
+        width: 25px;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    /* Action Buttons */
+    .action-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .btn-action {
+        padding: 16px;
+        border-radius: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .whatsapp-btn {
+        background: #25D366;
+        color: white;
+    }
+
+    .whatsapp-btn:hover {
+        background: #1eb956;
+        box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+    }
+
+    .chat-btn {
+        background: var(--primary-red);
+        color: white;
+    }
+
+    @media (max-width: 640px) {
+        .info-grid { grid-template-columns: 1fr; }
+        .bio-content { padding: 25px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="biodata-container">
+    <div class="biodata-card">
+        <div class="bio-header">
+            <h2>गोंडवाना वैवाहिक ग्रुप</h2>
+            <div class="serial-badge">सरल क्रमांक: {{ profile.serial_number }}</div>
+        </div>
+
+        <div class="bio-photo-section">
+            {% if profile.profile_photo %}
+                <img src="{{ profile.profile_photo.url }}" class="bio-img" alt="{{ profile.full_name }}">
+            {% else %}
+                <div class="bio-img-placeholder">
+                    <span class="material-symbols-outlined text-4xl">no_photography</span>
+                    <span class="text-[10px] font-bold mt-1">फोटो उपलब्ध नहीं</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="bio-content">
+            <div class="info-grid">
+                <div class="info-box">
+                    <span class="material-symbols-outlined">person</span>
+                    <div>
+                        <div class="info-label">नाम</div>
+                        <div class="info-value">{{ profile.full_name }}</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="material-symbols-outlined">family_history</span>
+                    <div>
+                        <div class="info-label">जाति / गोत्र</div>
+                        <div class="info-value">{{ profile.caste }} / {{ profile.gotra }}</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="material-symbols-outlined">account_balance</span>
+                    <div>
+                        <div class="info-label">देव संख्या</div>
+                        <div class="info-value">{{ profile.deity_number }}</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="material-symbols-outlined">cake</span>
+                    <div>
+                        <div class="info-label">जन्मतिथि</div>
+                        <div class="info-value">{{ profile.date_of_birth|date:"d/m/Y" }}</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="material-symbols-outlined">ruler</span>
+                    <div>
+                        <div class="info-label">कद / रंग</div>
+                        <div class="info-value">{{ profile.height }} / {{ profile.complexion }}</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="material-symbols-outlined">school</span>
+                    <div>
+                        <div class="info-label">शिक्षा</div>
+                        <div class="info-value">{{ profile.education }}</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="material-symbols-outlined">work</span>
+                    <div>
+                        <div class="info-label">व्यवसाय</div>
+                        <div class="info-value">{{ profile.occupation }}</div>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <div>
+                        <div class="info-label">पता</div>
+                        <div class="info-value">{{ profile.city }}, {{ profile.district }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 p-5 rounded-2xl bg-red-50 border border-red-100 text-center">
+                <p class="text-xs font-bold text-red-400 uppercase tracking-widest mb-1">संपर्क नंबर</p>
+                <p class="text-xl font-black text-red-600">
+                    {% if user.is_authenticated %} 
+                        {{ profile.guardian_mobile }} 
+                    {% else %} 
+                        संपर्क के लिए लॉगिन करें 
+                    {% endif %}
+                </p>
+                <p class="text-[10px] text-red-400 mt-2">*(रिश्ते की बात हेतु एडमिन से संपर्क कर सकते हैं)*</p>
+            </div>
+
+            <div class="action-group">
+                {% if target_user and target_user != request.user %}
+                <a href="{% url 'pages_chats' %}?user_id={{ target_user.id }}" class="btn-action chat-btn">
+                    <span class="material-symbols-outlined">chat</span> सीधे संदेश भेजें
+                </a>
+                {% endif %}
+
+                {% comment %} <a href="{{ whatsapp_url }}" target="_blank" class="btn-action whatsapp-btn">
+                    <span class="material-symbols-outlined">share</span> व्हाट्सएप पर साझा करें
+                </a> {% endcomment %}
+
+                <a href="{% url 'biodata_list' %}" class="flex items-center justify-center gap-2 text-sm font-bold text-gray-400 mt-4 hover:text-primary">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span> सूची में वापस जाएं
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+ 

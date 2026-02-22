@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html class="light" lang="hi">
+<head>
+    {% load static %}
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>{% block title %}बिहाव - अपना जीवनसाथी चुनें{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d41132",
+                        "saffron": "#FF9933",
+                        "gold": "#D4AF37",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#12080a", /* Slightly deeper dark for contrast */
+                    },
+                    fontFamily: {
+                        "display": ["Noto Sans Devanagari", "Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer components {
+            .traditional-pattern {
+                background-image: radial-gradient(#d41132 0.5px, transparent 0.5px);
+                background-size: 24px 24px;
+                opacity: 1.05; /* Keeps it subtle */
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-xl transition-all shadow-lg shadow-primary/20;
+            }
+        }
+        body {
+            font-family: 'Noto Sans Devanagari', 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181112] dark:text-white transition-colors duration-300">
+    
+    {% include 'header.html' %}
+
+    {% if messages %}
+    <div class="fixed top-20 right-5 z-[100] flex flex-col gap-3">
+        {% for message in messages %}
+        <div class="p-4 rounded-xl shadow-2xl border flex items-center gap-3 animate-bounce 
+            {% if message.tags == 'success' %} bg-green-50 border-green-200 text-green-700 {% else %} bg-red-50 border-red-200 text-red-700 {% endif %}">
+            <span class="material-symbols-outlined">
+                {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+            </span>
+            <span class="text-sm font-bold">{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="min-h-[70vh]">
+        {% block content %}{% endblock %}
+    </main>
+    
+    {% include 'footer.html' %}
+
+    <script>
+        // Auto-hide messages after 5 seconds
+        setTimeout(() => {
+            const msgs = document.querySelectorAll('.animate-bounce');
+            msgs.forEach(m => m.style.display = 'none');
+        }, 5000);
+
+        // Dark Mode Helper
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

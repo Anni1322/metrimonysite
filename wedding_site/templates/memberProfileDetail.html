@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+{% block title %}बिहाव - {{ profile.full_name }} का विवरण{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="flex items-center justify-between text-sm">
+        <div class="flex items-center gap-2 text-slate-500">
+            <a class="hover:text-primary" href="{% url 'biodata_list' %}">सूची</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <span class="text-slate-800 dark:text-slate-200 font-medium">{{ profile.full_name }} की प्रोफ़ाइल</span>
+        </div>
+        <div class="flex gap-4">
+            <a href="{% url 'pages_dashboard' %}" class="flex items-center gap-1 text-slate-500 hover:text-primary transition-colors font-bold">
+                <span class="material-symbols-outlined text-lg">dashboard</span> डैशबोर्ड वापस जाएं
+            </a>
+        </div>
+    </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <div class="grid grid-cols-12 gap-8">
+        
+        <div class="col-span-12 lg:col-span-4 space-y-4">
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-zinc-800 p-3">
+                {% if profile.profile_photo %}
+                    <img class="w-full aspect-[3/4] object-cover rounded-xl" src="{{ profile.profile_photo.url }}" alt="{{ profile.full_name }}"/>
+                {% else %}
+                    <div class="w-full aspect-[3/4] bg-slate-100 dark:bg-zinc-800 flex flex-col items-center justify-center rounded-xl text-slate-300">
+                        <span class="material-symbols-outlined text-7xl">account_circle</span>
+                        <p class="text-xs font-bold mt-2">फोटो उपलब्ध नहीं है</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+                <h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-xl">favorite</span> समान मैच
+                </h3>
+                <div class="space-y-4">
+                    {% for match in suggestions %}
+                    <div class="flex items-center gap-3">
+                        <div class="h-12 w-12 rounded-full overflow-hidden bg-slate-100">
+                            {% if match.profile_photo %}
+                                <img src="{{ match.profile_photo.url }}" class="h-full w-full object-cover">
+                            {% else %}
+                                <span class="material-symbols-outlined flex items-center justify-center h-full text-slate-300">person</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <a href="{% url 'biodata_detail' match.pk %}" class="text-sm font-semibold hover:text-primary">{{ match.full_name }}</a>
+                            <p class="text-xs text-slate-500">{{ match.gotra }} | {{ match.city }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <p class="text-xs text-slate-400 italic">कोई सुझाव नहीं मिला।</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-5 space-y-6">
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+                <div class="mb-6">
+                    <h1 class="text-3xl font-black text-slate-900 dark:text-white">{{ profile.full_name }}</h1>
+                    <p class="text-primary font-bold text-sm tracking-widest mt-1">
+                        {{ profile.serial_number }} | {{ profile.get_marital_status_display }}
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 py-6 border-y border-slate-50 dark:border-zinc-800">
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black mb-1">ऊंचाई</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.height }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black mb-1">जाति / गोत्र</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.caste }} / {{ profile.gotra }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black mb-1">स्थान</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.city }}, {{ profile.district }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black mb-1">जन्मतिथि</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.date_of_birth|date:"d M, Y" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black mb-1">व्यवसाय</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.occupation }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black mb-1">आय</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.annual_income|default:"निरंक" }}</p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h2 class="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-white mb-4">
+                        <span class="material-symbols-outlined text-primary">groups</span> पारिवारिक विवरण
+                    </h2>
+                    <div class="space-y-4 bg-slate-50 dark:bg-zinc-800/50 p-4 rounded-xl text-sm">
+                        <p class="text-slate-600 dark:text-slate-400">पिता का नाम: <b class="text-slate-900 dark:text-white">{{ profile.father_name }}</b></p>
+                        <p class="text-slate-600 dark:text-slate-400">माता का नाम: <b class="text-slate-900 dark:text-white">{{ profile.mother_name }}</b></p>
+                        <p class="text-slate-600 dark:text-slate-400">पिता का व्यवसाय: <b class="text-slate-900 dark:text-white">{{ profile.father_occupation|default:"-" }}</b></p>
+                        <p class="text-slate-600 dark:text-slate-400">मामा का गोत्र: <b class="text-slate-900 dark:text-white">{{ profile.maternal_uncle_gotra }}</b></p>
+                        <hr class="border-slate-200 dark:border-zinc-700 my-2">
+                        <p class="text-xs text-slate-400 uppercase font-bold">पारिवारिक स्थिति:</p>
+                        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">{{ profile.family_status }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white">
+                    <span class="material-symbols-outlined text-primary">school</span> शिक्षा और कार्य
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black">उच्चतम शिक्षा</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.education }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-black">कार्य स्थल</p>
+                        <p class="font-bold text-slate-700 dark:text-slate-200">{{ profile.work_location|default:"-" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-3">
+            <div class="sticky top-24 space-y-6">
+                <div class="bg-primary/5 border border-primary/20 rounded-2xl p-5 text-center">
+                    <div class="h-14 w-14 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <span class="material-symbols-outlined text-3xl">verified_user</span>
+                    </div>
+                    <p class="font-bold text-primary">प्रोफाइल स्टेटस</p>
+                    <p class="text-[11px] text-slate-500 uppercase font-bold tracking-widest mt-1">
+                        {% if profile.is_active %}सक्रिय (Active){% else %}छिपा हुआ (Hidden){% endif %}
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-xl border border-slate-100 dark:border-zinc-800">
+                    <div class="space-y-4">
+                        <a href="{% url 'biodata_edit' profile.pk %}" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all hover:bg-slate-800">
+                            <span class="material-symbols-outlined">edit_square</span> जानकारी बदलें
+                        </a>
+                        <a href="{{ whatsapp_url }}" target="_blank" class="w-full bg-green-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all hover:bg-green-700">
+                            <span class="material-symbols-outlined">share</span> व्हाट्सएप पर भेजें
+                        </a>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-slate-100 dark:border-zinc-800">
+                        <button onclick="confirmDelete()" class="w-full text-red-500 text-xs font-bold hover:underline flex items-center justify-center gap-1">
+                            <span class="material-symbols-outlined text-sm">delete_forever</span> बायोडाटा हटाएं
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-100 dark:bg-zinc-800 p-5 rounded-2xl border border-dashed border-slate-300">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-slate-400">contact_phone</span>
+                        <div>
+                            <p class="text-xs font-bold text-slate-700 dark:text-slate-300">संपर्क विवरण</p>
+                            <p class="text-[11px] text-slate-500 mt-1">अभिभावक: {{ profile.guardian_mobile }}</p>
+                            <p class="text-[11px] text-slate-500">स्वयं: {{ profile.candidate_mobile|default:"उपलब्ध नहीं" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function confirmDelete() {
+        if (confirm("क्या आप वाकई इस बायोडाटा को हटाना चाहते हैं? यह क्रिया वापस नहीं ली जा सकती।")) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{% url 'biodata_delete' profile.pk %}";
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = 'csrfmiddlewaretoken';
+            csrf.value = '{{ csrf_token }}';
+            form.appendChild(csrf);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% block title %}बिहाव - सदस्य प्रोफ़ाइल विवरण{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2 text-slate-500">
+<a class="hover:text-primary" href="#">खोजें</a>
+<span class="material-icons text-xs">chevron_right</span>
+<span class="text-slate-800 dark:text-slate-200 font-medium">अनन्या शर्मा की प्रोफ़ाइल</span>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-1 text-slate-500 hover:text-primary transition-colors">
+<span class="material-icons text-lg">arrow_back</span> पिछला
+            </button>
+<button class="flex items-center gap-1 text-slate-500 hover:text-primary transition-colors">
+                अगला <span class="material-icons text-lg">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+<div class="grid grid-cols-12 gap-8">
+<div class="col-span-12 lg:col-span-4 space-y-4">
+<div class="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-zinc-800 p-3">
+<img class="w-full aspect-[3/4] object-cover rounded-lg" data-alt="Primary profile photo of a woman in traditional attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB-MbdXbdubKx2OVOX7HWifYXDimaR57aD9zsR8F_SJ8hFyFe1_rSRGJPmQYlFGVcNXLOh2V6uPLzmZUyOQGA7DkkB3fVo6C2uhEwgghUmlLC-YNV1YylWBxmIJWt4YB9q7pYEb5gQRM8zs126V-rQuGlnW2oVWJq3xQH30qENEQBPUsCScFHppxktsZT06yjFoPPCu4AxiVXEcuK0HC33Y8vQSbI3s2FVxv2rCEj5VXP2VyG9GORLDQRumpwYsfv5FKt0Fe6ZWEf7"/>
+<div class="grid grid-cols-4 gap-2 mt-4">
+<img class="aspect-square object-cover rounded-lg ring-2 ring-primary" data-alt="Additional profile photo portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbNkILuuMdae3U5XC7wOFkndIR4FPLpK9r53KehhDFhC6w7zkjpFi15fCyJfW7pXWAM9XjR-thsNy7CGysvygRDclKGlaNH-RBEUvnTnAMrX2uVTTMo7BwDVJO35lWIS33tsiHJ2ERn1UMRFmpFEI5dF8oiMvEP4xfHadLOgXJIVktGivqCWr1IjuXpMFx_P3cH8KwUPkJOidBsZN64b3RsFQE4M_C8kFGtxDcUyI0bj98t8l1r-DFTRSVLeLAdInuGqZMjBIMZNYe"/>
+<img class="aspect-square object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" data-alt="Profile photo showing side profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBE5_Jqlr2K4YmuS1K65VhVLzzYHcdrRGIxNdTG4KiT443H8ymN7HSh8cb3qnRySIH4tyAmPXsNB8Z3SGm01CVfQHl2sH-RhiKrlZvNrX54r-fS5iZqAjurxEj25tpH6DEK8hKwXo49qtcKiBqaU2Wlupdm6oQ7E-44VN7hUbnIbW5n10tnoN-fwnedwr7VCoLcO8b-CW1dsYxkbNAzb0ECyb6L0DWPSLDPygmuuwiG25RfKzokzOYJ6uoNW8j9t7bHGfWI0-ZpadK"/>
+<img class="aspect-square object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" data-alt="Profile photo in casual wear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3ex5RRUNHlsBU3qMqMUknvSkds7oUvMn8-11e3z8WqPYij7FIL4Jxx1fh2bCv4zHwXh0WRxlqs_OXdp-xuSdG35NXYeen3JV1vS9A7X_zw9UaPynqHf6OGlfaOgYK3EYz46Ke-eDpsyPKSkSurWk0H631ss-ckFqhecwv0ll9hgfxqbBqRW6hAv8wXTlYqMqFS99GwgP-fIwafwxdDXSnSE6DGMI74hz1f4-RzfWoINPEg-H9Glbb-kI3pksde4pj5ajH7dOEmA1O"/>
+<div class="aspect-square rounded-lg bg-slate-100 dark:bg-zinc-800 flex items-center justify-center cursor-pointer hover:bg-slate-200 transition-colors">
+<span class="text-xs font-bold text-slate-500">+2 और</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+<h3 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+<span class="material-icons text-primary text-xl">favorite</span>
+                    समान मैच
+                </h3>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<img class="h-12 w-12 rounded-full object-cover" data-alt="Suggested match profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfuQP-l36LzmB5WOH3XaCYmlVffM7wPcc0WQtFycCPZlSZrmLgIwCYgvRSWAB8JpLPyk7fc0HVQ8ixhuvwvz4nGpECq8zOKaQtp75aWPV5ItkWS_wxw6pBUa5UdZlEq0f_H401oPyHJK00niSdUlQPqhdIYEx-yuo0LKlnRG9maL2syvZS4Y0eS1BQRJhW2TI5mexocr1ciZOnNYq3f4WF-eow8kOPBhywxOZQPecQecRbxASH1IqnFd5QTkukiWuRGzq1vkfJ_sq-"/>
+<div>
+<p class="text-sm font-semibold">प्रियंका वी.</p>
+<p class="text-xs text-slate-500">26 वर्ष, 5'4", बैंगलोर</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<img class="h-12 w-12 rounded-full object-cover" data-alt="Suggested match profile thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_LxrdhRCoE89w8_Yv-EgjeAqmREYhprstIrKIlQsCVH2FLjFH_204-_vyrikR4gRgxf96wCEHZ79_lt2nDkjdkGMTFTv7VheQMTV_bqR3puiw-xg2NBE0hKoCKiknIH5T4cgUb6vBuufFrbhYOlb-LhgElEuJ33Vhshou-zMk5IDMhwxKz5NV9Zcfivl77oIK0O1yAAYeYebjs7Gshdxty3ybdYCJZeixUl4HhFiw8GjEDg1HH5Ts_jc_mM884jZ6nlmdvhfP8A3t"/>
+<div>
+<p class="text-sm font-semibold">मेघा आर.</p>
+<p class="text-xs text-slate-500">25 वर्ष, 5'2", मुंबई</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 text-sm font-medium text-primary bg-primary/5 hover:bg-primary/10 rounded-lg transition-colors">सभी मैच देखें</button>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white">अनन्या शर्मा</h1>
+<p class="text-slate-500 font-medium">BHT-92837 | अंतिम सक्रिय 2 घंटे पहले</p>
+</div>
+<span class="material-icons text-primary/20 text-4xl">format_quote</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 py-4 border-y border-slate-50 dark:border-zinc-800">
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">उम्र / ऊंचाई</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">27 वर्ष, 5'6"</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">धर्म / जाति</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">हिंदू, ब्राह्मण</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">स्थान</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">नई दिल्ली, भारत</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">मातृभाषा</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">हिंदी</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">व्यवसाय</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">सॉफ्टवेयर इंजीनियर</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">आय</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">INR 18-20 LPA</p>
+</div>
+</div>
+<div class="space-y-4">
+<h2 class="text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+<span class="material-icons text-primary">person</span>
+                        मेरे बारे में
+                    </h2>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        मैं आधुनिक मूल्यों और पारंपरिक जड़ों के मेल वाला एक हंसमुख और सुलझा हुआ व्यक्ति हूं। दिल्ली में पली-बढ़ी, मैंने कंप्यूटर साइंस में मास्टर्स किया है और वर्तमान में एक अग्रणी मल्टीनेशनल कंपनी में काम कर रही हूं। मुझे यात्रा करना, नए व्यंजनों के साथ प्रयोग करना और अपने परिवार के साथ गुणवत्तापूर्ण समय बिताना पसंद है। मैं एक ऐसे साथी की तलाश में हूं जो सम्मानित, महत्वाकांक्षी हो और जीवन के प्रति समान दृष्टिकोण रखता हो।
+                    </p>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-slate-800 dark:text-white">
+<span class="material-icons text-primary">work</span>
+                    शिक्षा और करियर
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">उच्चतम योग्यता</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">मास्टर्स इन टेक्नोलॉजी (CS)</p>
+<p class="text-sm text-slate-500">IIT दिल्ली, 2019</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">नियोक्ता का नाम</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">गूगल इंडिया</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">पद</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">सीनियर सॉफ्टवेयर डेवलपर</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">वार्षिक आय</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">INR 18-20 लाख</p>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-slate-800 dark:text-white">
+<span class="material-icons text-primary">groups</span>
+                    पारिवारिक पृष्ठभूमि
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">परिवार का प्रकार</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">एकल परिवार</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">पारिवारिक मूल्य</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">मध्यममार्गी</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">पिता का व्यवसाय</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">सेवानिवृत्त सरकारी अधिकारी</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">माता का व्यवसाय</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">गृहणी</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">भाई-बहनों की संख्या</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">1 भाई (विवाहित)</p>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+<span class="material-symbols-outlined text-primary">brightness_5</span>
+                        कुंडली विवरण
+                    </h2>
+<span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full">आपकी कुंडली के साथ मेल खाता है</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">गोत्र</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">वशिष्ठ</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">मांगलिक स्थिति</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">गैर-मांगलिक</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">जन्म का समय</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">10:45 AM</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">जन्म स्थान</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">शिमला, हिमाचल प्रदेश</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">नक्षत्र</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">रोहिणी</p>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-zinc-800">
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-slate-800 dark:text-white">
+<span class="material-icons text-primary">restaurant</span>
+                    जीवनशैली
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">आहार संबंधी आदतें</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">शाकाहारी</p>
+</div>
+<div>
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">पीना / धूम्रपान</p>
+<p class="font-semibold text-slate-700 dark:text-slate-200">कभी नहीं / कभी नहीं</p>
+</div>
+<div class="col-span-2">
+<p class="text-xs text-slate-400 uppercase tracking-wider mb-1">शौक और रुचियां</p>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-xs font-medium">खाना बनाना</span>
+<span class="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-xs font-medium">शास्त्रीय संगीत</span>
+<span class="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-xs font-medium">पढ़ना</span>
+<span class="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-xs font-medium">योग</span>
+<span class="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-xs font-medium">यात्रा</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-3">
+<div class="sticky-sidebar space-y-6">
+<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4 flex items-center gap-4">
+<div class="h-12 w-12 bg-primary rounded-full flex items-center justify-center text-white">
+<span class="material-icons text-2xl">verified</span>
+</div>
+<div>
+<p class="text-sm font-bold text-primary">सत्यापित प्रोफ़ाइल</p>
+<p class="text-[11px] text-slate-500">पहचान और शिक्षा बिहाव टीम द्वारा सत्यापित</p>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-xl border border-slate-100 dark:border-zinc-800">
+<p class="text-sm text-center text-slate-500 mb-6 font-medium italic">अनन्या शर्मा में रुचि रखते हैं?</p>
+<div class="space-y-4">
+<button class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all transform active:scale-95 shadow-md shadow-primary/20">
+<span class="material-icons">favorite</span>
+                            रुचि व्यक्त करें
+                        </button>
+<button class="w-full bg-white dark:bg-zinc-800 border-2 border-primary/20 text-primary hover:border-primary font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+<span class="material-icons">chat</span>
+                            संदेश भेजें
+                        </button>
+<button class="w-full bg-slate-50 dark:bg-zinc-800/50 text-slate-600 dark:text-slate-300 font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+<span class="material-icons text-slate-400">bookmark_border</span>
+                            शॉर्टलिस्ट
+                        </button>
+</div>
+<div class="mt-8 pt-6 border-t border-slate-100 dark:border-zinc-800">
+<div class="flex items-center justify-between text-sm mb-4">
+<span class="text-slate-500">प्रतिक्रिया दर</span>
+<span class="font-bold text-green-600">92%</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+<div class="bg-green-500 h-full w-[92%]"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 px-2">
+<button class="text-sm text-slate-500 hover:text-primary flex items-center gap-2">
+<span class="material-icons text-lg">share</span> प्रोफ़ाइल साझा करें
+                    </button>
+<button class="text-sm text-slate-500 hover:text-primary flex items-center gap-2">
+<span class="material-icons text-lg">print</span> कुंडली प्रिंट करें
+                    </button>
+<button class="text-sm text-red-400 hover:text-red-600 flex items-center gap-2 mt-2">
+<span class="material-icons text-lg">report</span> प्रोफ़ाइल की रिपोर्ट करें
+                    </button>
+</div>
+<div class="bg-zinc-100 dark:bg-zinc-800 p-4 rounded-lg border border-dashed border-slate-300 dark:border-zinc-700">
+<div class="flex items-start gap-3">
+<span class="material-icons text-slate-400">lock</span>
+<div>
+<p class="text-xs font-bold text-slate-700 dark:text-slate-300">संपर्क विवरण निजी हैं</p>
+<p class="text-[11px] text-slate-500 mt-1 leading-tight">फोन/ईमेल विवरण देखने के लिए रुचि स्वीकार की जानी चाहिए।</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-white dark:bg-zinc-900 border-t border-slate-100 dark:border-zinc-800 py-10 mt-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="col-span-1">
+<span class="text-3xl font-bold text-primary tracking-tight">बिहाव</span>
+<p class="text-sm text-slate-500 mt-4 leading-relaxed">भारत का सबसे भरोसेमंद विवाह मंच। 2010 से आपके जीवनसाथी को खोजने में मदद कर रहा है।</p>
+</div>
+<div>
+<h4 class="font-bold text-slate-800 dark:text-white mb-4">त्वरित लिंक</h4>
+<ul class="text-sm text-slate-500 space-y-2">
+<li><a class="hover:text-primary" href="#">हमारे बारे में</a></li>
+<li><a class="hover:text-primary" href="#">संपर्क करें</a></li>
+<li><a class="hover:text-primary" href="#">सुरक्षा युक्तियाँ</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-slate-800 dark:text-white mb-4">गोपनीयता और सहायता</h4>
+<ul class="text-sm text-slate-500 space-y-2">
+<li><a class="hover:text-primary" href="#">गोपनीयता नीति</a></li>
+<li><a class="hover:text-primary" href="#">उपयोग की शर्तें</a></li>
+<li><a class="hover:text-primary" href="#">सामान्य प्रश्न</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-slate-800 dark:text-white mb-4">न्यूज़लेटर</h4>
+<div class="flex gap-2">
+<input class="bg-slate-50 dark:bg-zinc-800 border-none rounded-lg text-sm px-4 py-2 w-full focus:ring-1 focus:ring-primary" placeholder="आपका ईमेल" type="email"/>
+<button class="bg-primary text-white p-2 rounded-lg">
+<span class="material-icons">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="border-t border-slate-50 dark:border-zinc-800 mt-10 pt-8 text-center text-xs text-slate-400">
+            © 2023 बिहाव मैट्रिमोनी सर्विसेज। सर्वाधिकार सुरक्षित।
+        </div>
+</div>
+</footer>
+
+{% endblock %} {% endcomment %}

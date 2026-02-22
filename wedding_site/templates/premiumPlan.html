@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="py-20 text-center">
+    <h1 class="text-4xl font-black mb-12">बेहतर जीवनसाथी खोजने के लिए <span class="text-saffron">प्लान</span> चुनें</h1>
+    <div class="flex flex-wrap justify-center gap-8 px-6">
+        {% for plan in plans %}
+        <div class="bg-white p-10 rounded-3xl shadow-xl border border-gray-100 w-full max-w-sm hover:border-primary transition-all">
+            <h3 class="text-xl font-bold mb-4">{{ plan.name }}</h3>
+            <p class="text-4xl font-black text-primary mb-6">{{ plan.price }}</p>
+            <ul class="text-left space-y-4 mb-10 text-gray-600">
+                {% for feature in plan.features %}
+                    <li class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-500">check_circle</span> {{ feature }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <button class="w-full py-4 bg-primary text-white font-bold rounded-xl">प्लान चुनें</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% block title %}बिहाव प्रीमियम प्लान - जीवनसाथी की तलाश{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gold-gradient {
+        background: linear-gradient(135deg, #ecb613 0%, #f7d774 100%);
+    }
+    .card-hover:hover {
+        transform: translateY(-8px);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="py-16 text-center px-4">
+<h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
+            अपनी <span class="text-primary">प्रीमियम योजनाएं</span> चुनें
+</h1>
+<p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+            अपने जीवनसाथी की तलाश को और अधिक प्रभावी बनाएं। बेहतर विजिबिलिटी और सीधे संपर्कों के लिए आज ही प्रीमियम सदस्य बनें।
+        </p>
+</header>
+<main class="max-w-7xl mx-auto px-6 pb-24">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+<div class="bg-white dark:bg-slate-900/50 rounded-xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col card-hover shadow-sm">
+<div class="mb-8">
+<h3 class="text-xl font-bold mb-1">सिल्वर</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">शुरुआत करने के लिए बुनियादी सुविधाएं</p>
+</div>
+<div class="mb-8">
+<span class="text-4xl font-extrabold">₹1,499</span>
+<span class="text-slate-400 text-sm font-normal">/ 3 महीने</span>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm">25 संपर्क नंबर देखें</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm">सीधे संदेश भेजें (10)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm">मानक प्रोफ़ाइल रैंकिंग</span>
+</li>
+<li class="flex items-start gap-3 opacity-40">
+<span class="material-icons text-lg">cancel</span>
+<span class="text-sm line-through">प्रोफ़ाइल हाईलाइट</span>
+</li>
+<li class="flex items-start gap-3 opacity-40">
+<span class="material-icons text-lg">cancel</span>
+<span class="text-sm line-through">रिलेशनशिप मैनेजर</span>
+</li>
+</ul>
+<button class="w-full py-4 rounded-lg font-bold border-2 border-primary text-primary hover:bg-primary/5 transition-all">
+                    सिल्वर चुनें
+                </button>
+</div>
+<div class="bg-white dark:bg-slate-900/50 rounded-xl p-8 border-2 border-primary ring-4 ring-primary/10 flex flex-col card-hover relative shadow-xl transform scale-105 z-10">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 gold-gradient text-white px-6 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md whitespace-nowrap">
+                    सबसे लोकप्रिय
+                </div>
+<div class="mb-8">
+<h3 class="text-xl font-bold mb-1">गोल्ड</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">हमारी सबसे लोकप्रिय योजना</p>
+</div>
+<div class="mb-8">
+<span class="text-4xl font-extrabold text-primary">₹2,999</span>
+<span class="text-slate-400 text-sm font-normal">/ 6 महीने</span>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm font-medium">75 संपर्क नंबर देखें</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm font-medium">सीधे संदेश भेजें (अनलिमिटेड)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm font-medium">प्राथमिकता खोज रैंकिंग</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm font-medium">प्रोफ़ाइल हाईलाइट</span>
+</li>
+<li class="flex items-start gap-3 opacity-40">
+<span class="material-icons text-lg">cancel</span>
+<span class="text-sm line-through">रिलेशनशिप मैनेजर</span>
+</li>
+</ul>
+<button class="w-full py-4 rounded-lg font-bold bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20 transition-all">
+                    गोल्ड में अपग्रेड करें
+                </button>
+</div>
+<div class="bg-white dark:bg-slate-900/50 rounded-xl p-8 border border-slate-200 dark:border-slate-800 flex flex-col card-hover shadow-sm">
+<div class="mb-8">
+<h3 class="text-xl font-bold mb-1">प्लैटिनम</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">प्रीमियम वीआईपी सेवाएं</p>
+</div>
+<div class="mb-8">
+<span class="text-4xl font-extrabold">₹5,499</span>
+<span class="text-slate-400 text-sm font-normal">/ 12 महीने</span>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm">अनलिमिटेड संपर्क नंबर देखें</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm">सीधे संदेश भेजें (अनलिमिटेड)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm">शीर्ष प्रदर्शित रैंकिंग</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">check_circle</span>
+<span class="text-sm">प्रोफ़ाइल हाईलाइट</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-icons text-primary text-lg">stars</span>
+<span class="text-sm font-bold text-primary">रिलेशनशिप मैनेजर</span>
+</li>
+</ul>
+<button class="w-full py-4 rounded-lg font-bold border-2 border-slate-800 dark:border-slate-200 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                    प्लैटिनम चुनें
+                </button>
+</div>
+</div>
+<div class="mt-20 border-t border-slate-200 dark:border-slate-800 pt-12">
+<div class="text-center mb-10">
+<p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">10 लाख+ प्रोफाइलों का भरोसा</p>
+<div class="flex flex-wrap justify-center gap-8 md:gap-16 grayscale opacity-60">
+<div class="flex items-center gap-2">
+<span class="material-icons">verified_user</span>
+<span class="font-bold">100% सत्यापित</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-icons">security</span>
+<span class="font-bold">सुरक्षित भुगतान</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-icons">support_agent</span>
+<span class="font-bold">24/7 सहायता</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 bg-primary/5 rounded-2xl p-8 border border-primary/20">
+<div class="grid md:grid-cols-2 gap-12 items-center">
+<div>
+<h2 class="text-2xl font-bold mb-4">बिहाव प्रीमियम में अपग्रेड क्यों करें?</h2>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex-shrink-0 flex items-center justify-center">
+<span class="material-icons text-primary">visibility</span>
+</div>
+<div>
+<h4 class="font-bold">10 गुना अधिक दृश्यता</h4>
+<p class="text-sm text-slate-500">प्रीमियम प्रोफाइल खोज परिणामों और दैनिक सिफारिशों में काफी अधिक दिखाई देते हैं।</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex-shrink-0 flex items-center justify-center">
+<span class="material-icons">contact_phone</span>
+</div>
+<div>
+<h4 class="font-bold">सीधे संपर्क करें</h4>
+<p class="text-sm text-slate-500">रुचि स्वीकार होने का इंतज़ार न करें। संपर्क विवरण प्राप्त करें और तुरंत बातचीत शुरू करें।</p>
+</div>
+</div>
+</div>
+</div>
+<div class="rounded-xl overflow-hidden relative h-64 shadow-2xl">
+<img alt="Indian Wedding Couple" class="w-full h-full object-cover" data-alt="An elegant Indian wedding couple in traditional gold attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsJn6NGAM0B4panT6L_d75le6XSCSNI0JC8Wj5XFa-VBWgv3XLc_mgBzT7maGhOTQaUhqAEBGni5xZzc2gcPd0-E18tYvjIrcbBw5uraldTYBuD9emj3L3ZOhkPB4nyIci6yiwvslIXPlMrqHXGF717Zu_sVHLCyUTatT7Mkh4tEa7jcTx_b9DT4yvZnGDnchMz7b7KSpARbZlrWTGr81N5Q5Y6uWzw7BN8N_Crd5bnUW-O--BN7O5uiSVxaz9ee22wklpKdT-j_oT"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4 text-white">
+<p class="text-sm italic font-medium">"हमें केवल 3 महीनों में गोल्ड प्लान के माध्यम से एक-दूसरे का साथ मिला!"</p>
+<p class="text-xs opacity-80 mt-1">— राहुल और प्रिया, मुंबई</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-24 max-w-3xl mx-auto">
+<h2 class="text-2xl font-bold mb-8 text-center">अक्सर पूछे जाने वाले प्रश्न</h2>
+<div class="space-y-4">
+<details class="group bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 cursor-pointer">
+<summary class="flex justify-between items-center font-bold">
+<span>मैं प्रीमियम प्लान के लिए भुगतान कैसे कर सकता हूं?</span>
+<span class="material-icons transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="mt-4 text-slate-500 text-sm">हम UPI, क्रेडिट/डेबिट कार्ड, नेट बैंकिंग और पेटीएम जैसे लोकप्रिय वॉलेट का समर्थन करते हैं। सभी लेनदेन 100% सुरक्षित और एन्क्रिप्टेड हैं।</p>
+</details>
+<details class="group bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 cursor-pointer">
+<summary class="flex justify-between items-center font-bold">
+<span>क्या मैं अपना प्लान बाद में अपग्रेड कर सकता हूं?</span>
+<span class="material-icons transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="mt-4 text-slate-500 text-sm">हाँ, आप किसी भी समय सिल्वर से गोल्ड या प्लैटिनम में अपग्रेड कर सकते हैं। आपको केवल शेष अवधि के लिए आनुपातिक अंतर का भुगतान करना होगा।</p>
+</details>
+<details class="group bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 cursor-pointer">
+<summary class="flex justify-between items-center font-bold">
+<span>रिलेशनशिप मैनेजर क्या है?</span>
+<span class="material-icons transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<p class="mt-4 text-slate-500 text-sm">रिलेशनशिप मैनेजर एक समर्पित विशेषज्ञ होता है जो आपकी पसंद को समझता है, आपके लिए प्रोफाइल शॉर्टलिस्ट करता है और परिवारों के बीच बैठकों की व्यवस्था करता है।</p>
+</details>
+</div>
+</div>
+</main>
+{% endblock %} {% endcomment %}

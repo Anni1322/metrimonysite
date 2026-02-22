@@ -1,0 +1,10 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<h1>Your Matches</h1>
+<ul>
+    {% for match in matches %}
+        <li>{{ match.user_id_2.username }} - Status: {{ match.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}सफलता की कहानियाँ - बिहाव{% endblock %}
+
+{% block content %}
+<section class="relative py-20 bg-primary/10">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <h1 class="text-4xl md:text-6xl font-black text-gray-900 mb-4">हमारी <span class="text-primary">सफलता</span> की कहानियाँ</h1>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">गोंडवाना वैवाहिक ग्रुप के माध्यम से एक हुए परिवारों की खूबसूरत झलकियां।</p>
+    </div>
+</section>
+
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {% for story in stories %}
+            <div class="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl border border-gray-100 transition-all duration-500 hover:-translate-y-2">
+                <div class="relative h-80 overflow-hidden">
+                    <img src="{{ story.image.url }}" alt="{{ story.couple_name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <span class="bg-saffron text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">Married on {{ story.wedding_date|date:"M Y" }}</span>
+                        <h3 class="text-2xl font-bold text-white mt-2">{{ story.couple_name }}</h3>
+                    </div>
+                </div>
+                
+                <div class="p-8">
+                    <span class="material-symbols-outlined text-primary text-4xl mb-4">format_quote</span>
+                    <p class="text-gray-600 leading-relaxed italic mb-6">
+                        "{{ story.story_text|truncatewords:40 }}"
+                    </p>
+                    <div class="flex items-center gap-2 text-primary font-bold text-sm">
+                        <span>पूरी कहानी पढ़ें</span>
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-20">
+                <span class="material-symbols-outlined text-6xl text-gray-200">favorite</span>
+                <p class="text-gray-400 mt-4 font-bold">अभी कोई कहानी उपलब्ध नहीं है।</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-gray-900 text-white text-center">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-6">क्या आप भी अपनी कहानी साझा करना चाहते हैं?</h2>
+        <p class="text-gray-400 mb-8">यदि आपकी शादी इस ग्रुप के माध्यम से हुई है, तो हमें अपनी कहानी भेजें।</p>
+        <a href="https://wa.me/your_number" class="inline-flex items-center gap-3 bg-primary px-8 py-4 rounded-full font-bold hover:bg-primary/90 transition-all">
+            <span class="material-symbols-outlined text-sm">send</span> व्हाट्सएप पर भेजें
+        </a>
+    </div>
+</section>
+{% endblock %}

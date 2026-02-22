@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Unbooked Weddings</h1>
+<ul>
+    {% for wedding in unbooked %}
+        <li>{{ wedding.venue }} - {{ wedding.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

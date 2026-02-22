@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Preferences</h1>
+<form method="post">
+    {% csrf_token %}
+    <!-- Add form fields for Preferences model -->
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block title %}नया बायोडाटा जोड़ें{% endblock %}
+
+{% block extra_css %}
+<style>
+    .main-content {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        width: 100%;
+        max-width: 900px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    h2 {
+        text-align: center;
+        color: #10b981;
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #059669;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f9fafb;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        background: white;
+    }
+
+    .form-control[type="file"] {
+        padding: 8px;
+    }
+
+    .error-message {
+        color: #dc2626;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .submit-btn {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            padding: 15px;
+        }
+        .container {
+            padding: 20px;
+            max-width: 100%;
+        }
+        h2 {
+            font-size: 1.5rem;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="container">
+            <h2>
+                <i class="fas fa-plus-circle"></i>
+                नया बायोडाटा जोड़ें
+            </h2>
+            <form method="post" enctype="multipart/form-data" class="form-grid">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">
+                            {% if field.name == 'full_name' %}<i class="fas fa-user"></i>{% endif %}
+                            {% if field.name == 'caste' %}<i class="fas fa-users"></i>{% endif %}
+                            {% if field.name == 'gotra' %}<i class="fas fa-dna"></i>{% endif %}
+                            {% if field.name == 'deity_number' %}<i class="fas fa-om"></i>{% endif %}
+                            {% if field.name == 'father_name' %}<i class="fas fa-male"></i>{% endif %}
+                            {% if field.name == 'mother_name' %}<i class="fas fa-female"></i>{% endif %}
+                            {% if field.name == 'complexion' %}<i class="fas fa-palette"></i>{% endif %}
+                            {% if field.name == 'height' %}<i class="fas fa-ruler-vertical"></i>{% endif %}
+                            {% if field.name == 'date_of_birth' %}<i class="fas fa-birthday-cake"></i>{% endif %}
+                            {% if field.name == 'maternal_uncle_gotra' %}<i class="fas fa-user-friends"></i>{% endif %}
+                            {% if field.name == 'education' %}<i class="fas fa-graduation-cap"></i>{% endif %}
+                            {% if field.name == 'occupation' %}<i class="fas fa-briefcase"></i>{% endif %}
+                            {% if field.name == 'family_status' %}<i class="fas fa-home"></i>{% endif %}
+                            {% if field.name == 'address' %}<i class="fas fa-map-marker-alt"></i>{% endif %}
+                            {% if field.name == 'guardian_mobile' %}<i class="fas fa-phone"></i>{% endif %}
+                            {% if field.name == 'profile_photo' %}<i class="fas fa-camera"></i>{% endif %}
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i> Save Biodata
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Biodata</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-control { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+    </style>
+</head>
+<body>
+     {% include 'header.html' %}
+    <div class="container">
+        <h2 style="text-align: center; color: #28a745;">नया बायोडाटा जोड़ें</h2>
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div style="color: red; font-size: 0.9em;">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit">💾 Save Biodata</button>
+        </form>
+    </div>
+</div>
+{% endblock %} {% endcomment %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Admin Management Dashboard{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Biodata Management</h1>
+                <p class="text-sm text-gray-600">Manage all community profiles and their status.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-xs text-gray-400 font-bold uppercase">Total</p>
+                    <p class="text-xl font-black text-primary">{{ stats.total }}</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-xs text-gray-400 font-bold uppercase">Active</p>
+                    <p class="text-xl font-black text-green-600">{{ stats.active }}</p>
+                </div>
+                <a href="{% url 'biodata_create' %}" class="bg-primary hover:bg-primary/90 text-white px-6 py-4 rounded-lg font-bold flex items-center gap-2 self-center">
+                    <span class="material-symbols-outlined">add</span> New Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+            
+            <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 bg-gray-50/50">
+                <form method="GET" class="relative w-full md:w-96">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                    <input type="text" name="q" placeholder="Search by name or serial..." 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-primary focus:border-primary">
+                </form>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider">
+                            <th class="px-6 py-4">Serial & Name</th>
+                            <th class="px-6 py-4">Gotra / Caste</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4">Created Date</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for profile in profiles %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                        {% if profile.profile_photo %}
+                                            <img src="{{ profile.profile_photo.url }}" class="h-full w-full object-cover">
+                                        {% else %}
+                                            <span class="material-symbols-outlined flex items-center justify-center h-full text-gray-400">person</span>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900">{{ profile.full_name }}</p>
+                                        <p class="text-xs text-primary font-mono">{{ profile.serial_number }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-gray-700">{{ profile.gotra }}</p>
+                                <p class="text-xs text-gray-400">{{ profile.caste }}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if profile.is_active %}
+                                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Active</span>
+                                {% else %}
+                                    <span class="bg-gray-100 text-gray-500 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Hidden</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ profile.created_at|date:"d M, Y" }}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <a href="{% url 'biodata_detail' profile.pk %}" class="p-2 text-gray-400 hover:text-primary transition-colors" title="View">
+                                        <span class="material-symbols-outlined">visibility</span>
+                                    </a>
+                                    <a href="{% url 'biodata_edit' profile.pk %}" class="p-2 text-gray-400 hover:text-blue-600 transition-colors" title="Edit">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </a>
+                                    <button onclick="confirmDelete('{{ profile.pk }}', '{{ profile.full_name }}')" class="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">No profiles found matching your search.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(pk, name) {
+    if (confirm("Are you sure you want to delete the biodata of " + name + "? This action cannot be undone.")) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/biodata/delete/${pk}/`; 
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = 'csrfmiddlewaretoken';
+        csrf.value = '{{ csrf_token }}';
+        form.appendChild(csrf);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+{% endblock %}

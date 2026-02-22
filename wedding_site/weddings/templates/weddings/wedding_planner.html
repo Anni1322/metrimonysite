@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Wedding Planner</h1>
+<ul>
+    {% for wedding in weddings %}
+        <li>{{ wedding.venue }} - {{ wedding.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Nearby People</h1>
+<ul>
+    {% for loc in nearby %}
+        <li>{{ loc.user.username }} - {{ loc.city }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}बिहाव - आपके लिए सुझाव{% endblock %}
+
+{% block content %}
+
+<main class="max-w-7xl mx-auto px-6 py-12">
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mb-4">
+            <span class="material-symbols-outlined text-4xl text-primary">favorite</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black text-slate-900">आदर्श मैच सुझाव</h1>
+        <p class="text-slate-500 mt-2 font-medium">हमने <span class="text-primary font-bold">{{ base_profile.full_name }}</span> के लिए ये प्रोफाइल चुनी हैं</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for match in suggestions %}
+        <div class="bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-xl shadow-primary/5 hover:-translate-y-2 transition-all duration-500">
+            <div class="relative h-64">
+                {% if match.profile_photo %}
+                    <img src="{{ match.profile_photo.url }}" class="w-full h-full object-cover">
+                {% else %}
+                    <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
+                        <span class="material-symbols-outlined text-6xl">person</span>
+                    </div>
+                {% endif %}
+                
+                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full border border-primary/20 shadow-lg">
+                    <p class="text-[10px] font-black text-primary uppercase leading-none">Match Score</p>
+                    <p class="text-lg font-black text-slate-800 leading-none mt-1">94%</p>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <h3 class="text-xl font-extrabold text-slate-900 mb-4">{{ match.full_name }}</h3>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+                    <div class="flex items-center gap-2 text-slate-500">
+                        <span class="material-symbols-outlined text-saffron text-lg">fingerprint</span>
+                        <span>{{ match.gotra }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-500">
+                        <span class="material-symbols-outlined text-gold text-lg">wb_sunny</span>
+                        <span>{{ match.deity_number }} देव</span>
+                    </div>
+                </div>
+
+                <a href="{% url 'biodata_detail' pk=match.pk %}" class="block w-full text-center py-3 bg-primary/5 hover:bg-primary text-primary hover:text-white font-bold rounded-xl transition-all border border-primary/10">
+                    प्रोफाइल देखें
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-20">
+            <p class="text-slate-400 font-bold italic">फिलहाल कोई मैच नहीं मिला। कृपया बाद में देखें।</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-16 p-8 bg-gradient-to-r from-slate-900 to-slate-800 rounded-[2.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="flex items-center gap-6">
+            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-3xl text-gold">psychology</span>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold">क्या आप और मैच चाहते हैं?</h4>
+                <p class="text-white/60 text-sm">हमारा एआई आपके गोत्र और देव संख्या के आधार पर सटीक सुझाव देता है।</p>
+            </div>
+        </div>
+        <button class="bg-gold hover:bg-yellow-500 text-slate-900 font-black px-10 py-4 rounded-2xl transition-all shadow-lg shadow-gold/20">
+            प्रीमियम एक्टिवेट करें
+        </button>
+    </div>
+</main>
+
+{% endblock %}

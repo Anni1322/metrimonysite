@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="max-w-7xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-bold mb-6">खोज परिणाम: <span class="text-primary">"{{ query }}"</span></h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for profile in results %}
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                <div class="h-20 w-20 rounded-full bg-gray-200 overflow-hidden">
+                    {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" class="object-cover h-full w-full">{% endif %}
+                </div>
+                <div>
+                    <h4 class="font-bold">{{ profile.full_name }}</h4>
+                    <p class="text-xs text-gray-500">{{ profile.gotra }} | {{ profile.city }}</p>
+                    <a href="{% url 'biodata_detail' profile.pk %}" class="text-primary text-xs font-bold mt-2 block">विवरण देखें</a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-gray-500 italic">कोई परिणाम नहीं मिला।</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% block title %}बिहाव - खोज परिणाम{% endblock %}
+
+{% block extra_css %}
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="max-w-[1280px] mx-auto px-4 py-8 flex gap-8">
+<aside class="hidden lg:block w-72 shrink-0">
+<div class="bg-white dark:bg-[#2d161a] rounded-xl border border-[#f4f0f1] dark:border-[#3d2226] p-5 sticky top-24 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h2 class="text-lg font-bold">फ़िल्टर</h2>
+<p class="text-xs text-[#896168] dark:text-[#a07b82]">अपनी खोज को सीमित करें</p>
+</div>
+<button class="text-xs font-bold text-primary hover:underline">सभी हटाएं</button>
+</div>
+<div class="flex flex-col gap-6">
+<div>
+<div class="flex items-center gap-2 mb-3 text-[#181112] dark:text-white">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span class="text-sm font-bold">स्थान</span>
+</div>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">मुंबई</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">पुणे</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">रायपुर</span>
+</label>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-3 text-[#181112] dark:text-white">
+<span class="material-symbols-outlined text-lg">person</span>
+<span class="text-sm font-bold">वैवाहिक स्थिति</span>
+</div>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">कभी शादी नहीं की</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">तलाकशुदा</span>
+</label>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-3 text-[#181112] dark:text-white">
+<span class="material-symbols-outlined text-lg">school</span>
+<span class="text-sm font-bold">शिक्षा</span>
+</div>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">स्नातकोत्तर (Masters)</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">स्नातक (Bachelors)</span>
+</label>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-3 text-[#181112] dark:text-white">
+<span class="material-symbols-outlined text-lg">work</span>
+<span class="text-sm font-bold">व्यवसाय</span>
+</div>
+<div class="space-y-2 text-sm">
+<select class="w-full bg-[#f4f0f1] dark:bg-[#3d2226] border-none rounded-lg focus:ring-primary/20 py-2">
+<option>व्यवसाय चुनें</option>
+<option>आईटी / सॉफ्टवेयर</option>
+<option>मेडिकल / स्वास्थ्य</option>
+<option>शिक्षा / शैक्षणिक</option>
+</select>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-3 text-[#181112] dark:text-white">
+<span class="material-symbols-outlined text-lg">translate</span>
+<span class="text-sm font-bold">मातृभाषा</span>
+</div>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">हिंदी</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="h-4 w-4 rounded border-[#e6dbdd] text-primary focus:ring-primary/20 bg-transparent" type="checkbox"/>
+<span class="text-sm group-hover:text-primary transition-colors">छत्तीसगढ़ी</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 px-2">
+<div>
+<h2 class="text-3xl font-bold text-[#181112] dark:text-white">1,240 परिणाम मिले</h2>
+<p class="text-[#896168] dark:text-[#a07b82] text-sm mt-1">आपकी पसंद और स्थान के आधार पर</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-sm font-medium">क्रमबद्ध करें:</span>
+<button class="flex items-center gap-2 bg-white dark:bg-[#2d161a] border border-[#f4f0f1] dark:border-[#3d2226] px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">
+                    प्रासंगिकता
+                    <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<div class="bg-white dark:bg-[#2d161a] rounded-xl overflow-hidden border border-[#f4f0f1] dark:border-[#3d2226] shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative">
+<div class="aspect-[3/4] bg-cover bg-center" data-alt="Portrait of a smiling woman in traditional attire" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB4zwwkRxAKKmBC4idrFcjqa3ZksVWBGnlo5mfOWCRCuusuipBCsYONbCvEjRSmsXbJNQ2hH21wrbTAvAVwVm6bPQUKC4OAOS2O5LuUDvvaAeLoVnKGGRhHsFmkC33GUgBW7WkZlgv1q-1Fe19xOITgzSXAtZArVPYnEgkzQbIgsYPR4xAJVOkxK2U-1-PeZxwUO3OvxpLmVR4cbDCGMLYWDCLdqrLVXb71rOvGDlm098fg0F8HAZkwlmsiDlBBiotwoh0KId7O4Lqo");'></div>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">verified</span> सत्यापित
+                    </div>
+<button class="absolute top-3 right-3 bg-white/30 backdrop-blur-sm p-1.5 rounded-full text-white hover:bg-white/50">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-4">
+<h3 class="text-lg font-bold text-[#181112] dark:text-white">अदिति शर्मा</h3>
+<p class="text-sm text-[#896168] dark:text-[#a07b82] mt-1">उम्र: 26 वर्ष, कद: 5'4" | डॉक्टर</p>
+<p class="text-sm text-[#896168] dark:text-[#a07b82]">शहर: मुंबई, महाराष्ट्र</p>
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="flex items-center justify-center bg-primary text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-90 transition-all">
+                            अभी जुड़ें
+                        </button>
+<button class="flex items-center justify-center bg-[#f4f0f1] dark:bg-[#3d2226] text-[#181112] dark:text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-80 transition-all">
+                            शॉर्टलिस्ट
+                        </button>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#2d161a] rounded-xl overflow-hidden border border-[#f4f0f1] dark:border-[#3d2226] shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative">
+<div class="aspect-[3/4] bg-cover bg-center" data-alt="Professional portrait of a woman in an office setting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBveEYXNnE5rgUBVKGen7QhilLbM7D5nJHBjK-3wwqT21ujmgdt13_hLpVipqyC4Bo8MXzONd72vWyaVKebJ_XELKxlmFLflcioCEkgVb7iGKJacKjLCdKl57GKc-9Eh4G6ebEDS672qxzLZ_taSL6aR66lAdMvZlOFs9ZFKWtZ7Y_v66MmhIRVJsmmHoqYCzr3XbqCzm2zhrUcQUjvM8Wzyws1Fw6BlEI8Zmpb-wmDs0Wfiku9G2Whp213Tgem5gQIXkTWFPWBIfUg");'></div>
+</div>
+<div class="p-4">
+<h3 class="text-lg font-bold text-[#181112] dark:text-white">प्रिया पटेल</h3>
+<p class="text-sm text-[#896168] dark:text-[#a07b82] mt-1">उम्र: 28 वर्ष, कद: 5'2" | इंजीनियर</p>
+<p class="text-sm text-[#896168] dark:text-[#a07b82]">शहर: पुणे, महाराष्ट्र</p>
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="flex items-center justify-center bg-primary text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-90 transition-all">
+                            अभी जुड़ें
+                        </button>
+<button class="flex items-center justify-center bg-[#f4f0f1] dark:bg-[#3d2226] text-[#181112] dark:text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-80 transition-all">
+                            शॉर्टलिस्ट
+                        </button>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#2d161a] rounded-xl overflow-hidden border border-[#f4f0f1] dark:border-[#3d2226] shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative">
+<div class="aspect-[3/4] bg-cover bg-center" data-alt="Outdoor portrait of a professional looking man" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCjHTu1OOjZRTThggqbd9sRN_eeyaW8mjyBzqexfOJQT5r0DKUa5cZ-gOBvo_sTyRsktKFJi-DrXHVoI6vgm70jvGXg43Pr0B0mBmfE1dnDMx9CV6mZbV7iKbpQnSFL8-GgDKlO44acdBdJCK7Bv5mbIx_5VZD5GvAbigOCnUSOeF4G5cfGXmMAgRv0dYp8R_zq6bj8AUstvXIaIAP4qkRe1wAH1Sy-BlyzWIlNqW0-pkvpnmtlMpnpXxCSGmANEW4D8XMgDSsgLzg-");'></div>
+</div>
+<div class="p-4">
+<h3 class="text-lg font-bold text-[#181112] dark:text-white">राहुल वर्मा</h3>
+<p class="text-sm text-[#896168] dark:text-[#a07b82] mt-1">उम्र: 30 वर्ष, कद: 5'10" | प्रबंधक</p>
+<p class="text-sm text-[#896168] dark:text-[#a07b82]">शहर: दिल्ली, एनसीआर</p>
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="flex items-center justify-center bg-primary text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-90 transition-all">
+                            अभी जुड़ें
+                        </button>
+<button class="flex items-center justify-center bg-[#f4f0f1] dark:bg-[#3d2226] text-[#181112] dark:text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-80 transition-all">
+                            शॉर्टलिस्ट
+                        </button>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#2d161a] rounded-xl overflow-hidden border border-[#f4f0f1] dark:border-[#3d2226] shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative">
+<div class="aspect-[3/4] bg-cover bg-center" data-alt="Artistic portrait of a woman with vibrant background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuADPm5pFJRM7pHhkA9UaT_iJst0YH_cDs8J42zHHZr386zfgSAmKhZ16G8x5pDz9_dwrEagSNLNFX1W49a2t9yhpHMeJ1D9PjafEKfcDpJgMUuMsKNaRJs0ewjjuLNwYBOZUD364zFjTGS8IA4n2f50tS841_Opm-IR2v_NBCeFOgrc3E4mZolF2bsHpPTMbHhhZ1aweCfZuZpRIfrKCXAGt1eT8iuOxIfcM0g1SBStCbAHy3HkZ_EdLyeflLOl5kIz30F6cxnrNakg");'></div>
+</div>
+<div class="p-4">
+<h3 class="text-lg font-bold text-[#181112] dark:text-white">नेहा रेड्डी</h3>
+<p class="text-sm text-[#896168] dark:text-[#a07b82] mt-1">उम्र: 25 वर्ष, कद: 5'5" | डिजाइनर</p>
+<p class="text-sm text-[#896168] dark:text-[#a07b82]">शहर: बेंगलुरु, कर्नाटक</p>
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="flex items-center justify-center bg-primary text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-90 transition-all">
+                            अभी जुड़ें
+                        </button>
+<button class="flex items-center justify-center bg-[#f4f0f1] dark:bg-[#3d2226] text-[#181112] dark:text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-80 transition-all">
+                            शॉर्टलिस्ट
+                        </button>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#2d161a] rounded-xl overflow-hidden border border-[#f4f0f1] dark:border-[#3d2226] shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative">
+<div class="aspect-[3/4] bg-cover bg-center" data-alt="Portrait of a man in formal attire" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuARRvIAFbC-1hUxJk5xoVYax1uKMsEbZcj89xWy0o__Dfwg9SxSwfh3XhKdUmM9eX7uKwBCOUlhH4nDlUNXtSAtZUxf995-7IOLNMaUHBAdlWqlas4GxU5l53fPUN9cEUsSr3olYxndiosD3wclOQEo7RCJIoH41qHYvCGGPRoo3HSLgCBR8w8HLYWoWyJQ0-iyH07cu5Y9qZ_YAx99AIPxltB2ZwRPJN3sB3xjSYtAM9GwdirqOXrtRt0aeFnDIzSGSO_5RBSFD43g");'></div>
+</div>
+<div class="p-4">
+<h3 class="text-lg font-bold text-[#181112] dark:text-white">अमित सिंह</h3>
+<p class="text-sm text-[#896168] dark:text-[#a07b82] mt-1">उम्र: 29 वर्ष, कद: 5'9" | आर्किटेक्ट</p>
+<p class="text-sm text-[#896168] dark:text-[#a07b82]">शहर: लखनऊ, उत्तर प्रदेश</p>
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="flex items-center justify-center bg-primary text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-90 transition-all">
+                            अभी जुड़ें
+                        </button>
+<button class="flex items-center justify-center bg-[#f4f0f1] dark:bg-[#3d2226] text-[#181112] dark:text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-80 transition-all">
+                            शॉर्टलिस्ट
+                        </button>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#2d161a] rounded-xl overflow-hidden border border-[#f4f0f1] dark:border-[#3d2226] shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative">
+<div class="aspect-[3/4] bg-cover bg-center" data-alt="Portrait of a woman wearing glasses" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA_0nU9881yXhZEVEP7MkfaCmfVySOKRz1yV6TI8SHwDiFnzOUiqmJMQSoPiw6Hjnj4ytU0UNdFSG4ziiszpAgfukrxTxQmA3XjHzg3MA8ooq98iYcl34LepgTYl3_NbXbBz86Au1t-iW_S8Uq8HhTZiXLyk2s4hRh7VONXvAfhFy03T5OlNiB4e3kOLSSn3z_shTaHO0-I9aqCz-Hs8wGbE6J4qaqq8w8VyJfn41pZDRnl1voePrD4OUeY8lj9cMpjhjzCHeh5G_Bp");'></div>
+</div>
+<div class="p-4">
+<h3 class="text-lg font-bold text-[#181112] dark:text-white">नेहा गुप्ता</h3>
+<p class="text-sm text-[#896168] dark:text-[#a07b82] mt-1">उम्र: 27 वर्ष, कद: 5'3" | शिक्षिका</p>
+<p class="text-sm text-[#896168] dark:text-[#a07b82]">शहर: जयपुर, राजस्थान</p>
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button class="flex items-center justify-center bg-primary text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-90 transition-all">
+                            अभी जुड़ें
+                        </button>
+<button class="flex items-center justify-center bg-[#f4f0f1] dark:bg-[#3d2226] text-[#181112] dark:text-white text-sm font-bold py-2.5 rounded-lg hover:bg-opacity-80 transition-all">
+                            शॉर्टलिस्ट
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center">
+<nav class="flex items-center gap-1">
+<button class="size-10 flex items-center justify-center rounded-lg hover:bg-[#f4f0f1] dark:hover:bg-[#3d2226] transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-lg bg-primary text-white font-bold">1</button>
+<button class="size-10 flex items-center justify-center rounded-lg hover:bg-[#f4f0f1] dark:hover:bg-[#3d2226] font-medium transition-all">2</button>
+<button class="size-10 flex items-center justify-center rounded-lg hover:bg-[#f4f0f1] dark:hover:bg-[#3d2226] font-medium transition-all">3</button>
+<span class="px-2">...</span>
+<button class="size-10 flex items-center justify-center rounded-lg hover:bg-[#f4f0f1] dark:hover:bg-[#3d2226] font-medium transition-all">12</button>
+<button class="size-10 flex items-center justify-center rounded-lg hover:bg-[#f4f0f1] dark:hover:bg-[#3d2226] transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</nav>
+</div>
+</div>
+</main>
+<footer class="mt-12 border-t border-[#f4f0f1] dark:border-[#3d2226] bg-white dark:bg-[#2d161a] py-8">
+<div class="max-w-[1280px] mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3 opacity-60">
+<div class="text-[#181112] dark:text-white size-6">
+<svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-sm font-bold">बिहाव © 2026</span>
+</div>
+<div class="flex gap-8 text-sm text-[#896168] dark:text-[#a07b82]">
+<a class="hover:text-primary" href="#">हमारे बारे में</a>
+<a class="hover:text-primary" href="#">सुरक्षा सुझाव</a>
+<a class="hover:text-primary" href="#">गोपनीयता नीति</a>
+<a class="hover:text-primary" href="#">संपर्क</a>
+</div>
+</div>
+</footer>
+
+{% endblock %} {% endcomment %}

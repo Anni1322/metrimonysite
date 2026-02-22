@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}प्रोफाइल सेटिंग्स{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen py-10">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row gap-8">
+            
+            <div class="w-full md:w-1/4">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
+                    <div class="text-center mb-6">
+                        <div class="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden border-4 border-white shadow-md">
+                            {% if profile.profile_photo %}
+                                <img src="{{ profile.profile_photo.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <span class="material-symbols-outlined text-4xl text-primary">person</span>
+                            {% endif %}
+                        </div>
+                        <h3 class="font-bold text-gray-900">{{ profile.full_name|default:user.username }}</h3>
+                        <p class="text-xs text-gray-500">{{ profile.serial_number|default:"User Account" }}</p>
+                    </div>
+                    
+                    <nav class="space-y-1">
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 bg-primary/5 text-primary rounded-xl font-bold">
+                            <span class="material-symbols-outlined text-lg">person_edit</span> प्रोफाइल एडिट करें
+                        </a>
+                        <a href="{% url 'pages_dashboard' %}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all">
+                            <span class="material-symbols-outlined text-lg">dashboard</span> डैशबोर्ड
+                        </a>
+                        <hr class="my-2 border-gray-100">
+                        <a href="{% url 'pages_logout' %}" class="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                            <span class="material-symbols-outlined text-lg">logout</span> लॉगआउट
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="w-full md:w-3/4">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-50 bg-white">
+                        <h2 class="text-xl font-bold text-gray-900">व्यक्तिगत जानकारी अपडेट करें</h2>
+                        <p class="text-sm text-gray-500">यह जानकारी आपके सार्वजनिक बायोडाटा में दिखाई देगी।</p>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data" class="p-8">
+                        {% csrf_token %}
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {% for field in form %}
+                                <div class="flex flex-col gap-2 {% if field.name == 'address' or field.name == 'family_status' %}md:col-span-2{% endif %}">
+                                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">
+                                        {{ field.label }}
+                                    </label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <p class="text-red-500 text-xs italic">{{ field.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end gap-4">
+                            <button type="reset" class="px-6 py-3 border border-gray-200 rounded-xl text-gray-600 font-bold hover:bg-gray-50 transition-all">
+                                बदलाव रद्द करें
+                            </button>
+                            <button type="submit" class="px-10 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined">save</span> जानकारी सुरक्षित करें
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styling for the Django generated form inputs to match Tailwind */
+    input, select, textarea {
+        @apply w-full border-gray-200 rounded-xl py-3 px-4 text-sm focus:ring-primary focus:border-primary transition-all !important;
+        border: 1px solid #e5e7eb;
+    }
+    input:focus { border-color: #f26522; } /* Change to your primary color */
+</style>
+{% endblock %}
