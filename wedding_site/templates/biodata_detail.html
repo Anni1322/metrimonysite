@@ -39,6 +39,7 @@
         font-weight: 800;
         letter-spacing: 1px;
         margin-bottom: 5px;
+        font-size: 1.8rem;
     }
 
     .serial-badge {
@@ -50,7 +51,7 @@
         display: inline-block;
         backdrop-filter: blur(5px);
     }
-675
+
     /* Photo Section */
     .bio-photo-section {
         margin-top: -60px;
@@ -82,6 +83,27 @@
         color: #9ca3af;
     }
 
+    /* Section Title */
+    .section-divider {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        margin: 20px 0 10px;
+        color: var(--primary-red);
+        font-weight: 800;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .section-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+        margin-left: 15px;
+    }
+
     /* Fields Layout */
     .bio-content {
         padding: 40px;
@@ -90,17 +112,17 @@
     .info-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
+        gap: 15px;
     }
 
     .info-box {
         background: #fcfcfc;
         border: 1px solid #f8f8f8;
-        padding: 15px 20px;
+        padding: 12px 18px;
         border-radius: 16px;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
         transition: all 0.3s ease;
     }
 
@@ -110,24 +132,27 @@
         transform: translateY(-2px);
     }
 
-    .info-box i {
+    .info-box i, .info-box .material-symbols-outlined {
         color: var(--primary-red);
-        font-size: 1.2rem;
-        width: 25px;
+        font-size: 1.4rem;
+        width: 28px;
     }
 
     .info-label {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         color: #9ca3af;
         text-transform: uppercase;
         font-weight: 700;
         letter-spacing: 0.5px;
+        line-height: 1;
+        margin-bottom: 4px;
     }
 
     .info-value {
         font-size: 1rem;
         font-weight: 600;
         color: var(--text-main);
+        line-height: 1.2;
     }
 
     /* Action Buttons */
@@ -147,6 +172,7 @@
         justify-content: center;
         gap: 10px;
         transition: all 0.3s ease;
+        text-decoration: none;
     }
 
     .whatsapp-btn {
@@ -167,6 +193,7 @@
     @media (max-width: 640px) {
         .info-grid { grid-template-columns: 1fr; }
         .bio-content { padding: 25px; }
+        .bio-header h2 { font-size: 1.4rem; }
     }
 </style>
 {% endblock %}
@@ -175,7 +202,7 @@
 <div class="biodata-container">
     <div class="biodata-card">
         <div class="bio-header">
-            <h2>गोंडवाना वैवाहिक ग्रुप</h2>
+            <h2>जनजाति वैवाहिक समूह</h2>
             <div class="serial-badge">सरल क्रमांक: {{ profile.serial_number }}</div>
         </div>
 
@@ -184,7 +211,7 @@
                 <img src="{{ profile.profile_photo.url }}" class="bio-img" alt="{{ profile.full_name }}">
             {% else %}
                 <div class="bio-img-placeholder">
-                    <span class="material-symbols-outlined text-4xl">no_photography</span>
+                    <span class="material-symbols-outlined">no_photography</span>
                     <span class="text-[10px] font-bold mt-1">फोटो उपलब्ध नहीं</span>
                 </div>
             {% endif %}
@@ -192,6 +219,8 @@
 
         <div class="bio-content">
             <div class="info-grid">
+                <div class="section-divider">व्यक्तिगत जानकारी</div>
+                
                 <div class="info-box">
                     <span class="material-symbols-outlined">person</span>
                     <div>
@@ -199,53 +228,106 @@
                         <div class="info-value">{{ profile.full_name }}</div>
                     </div>
                 </div>
-                <div class="info-box">
-                    <span class="material-symbols-outlined">family_history</span>
-                    <div>
-                        <div class="info-label">जाति / गोत्र</div>
-                        <div class="info-value">{{ profile.caste }} / {{ profile.gotra }}</div>
-                    </div>
-                </div>
-                <div class="info-box">
-                    <span class="material-symbols-outlined">account_balance</span>
-                    <div>
-                        <div class="info-label">देव संख्या</div>
-                        <div class="info-value">{{ profile.deity_number }}</div>
-                    </div>
-                </div>
+
                 <div class="info-box">
                     <span class="material-symbols-outlined">cake</span>
                     <div>
-                        <div class="info-label">जन्मतिथि</div>
-                        <div class="info-value">{{ profile.date_of_birth|date:"d/m/Y" }}</div>
+                        <div class="info-label">जन्मतिथि / समय</div>
+                        <div class="info-value">{{ profile.date_of_birth|date:"d/m/Y" }} {% if profile.birth_time %}({{ profile.birth_time|time:"h:i A" }}){% endif %}</div>
                     </div>
                 </div>
+
                 <div class="info-box">
-                    <span class="material-symbols-outlined">ruler</span>
+                    <span class="material-symbols-outlined">wc</span>
                     <div>
-                        <div class="info-label">कद / रंग</div>
-                        <div class="info-value">{{ profile.height }} / {{ profile.complexion }}</div>
+                        <div class="info-label">लिंग / वैवाहिक स्थिति</div>
+                        <div class="info-value">{{ profile.get_gender_display }} / {{ profile.get_marital_status_display }}</div>
                     </div>
                 </div>
+
+                <div class="info-box">
+                    <span class="material-symbols-outlined">bloodtype</span>
+                    <div>
+                        <div class="info-label">रक्त समूह</div>
+                        <div class="info-value">{{ profile.get_blood_group_display|default:"N/A" }}</div>
+                    </div>
+                </div>
+
+                <div class="section-divider">शारीरिक विवरण</div>
+
+                <div class="info-box">
+                    <span class="material-symbols-outlined">straighten</span>
+                    <div>
+                        <div class="info-label">कद (Height)</div>
+                        <div class="info-value">{{ profile.get_height_display|default:"N/A" }}</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <span class="material-symbols-outlined">palette</span>
+                    <div>
+                        <div class="info-label">रंग / वजन</div>
+                        <div class="info-value">{{ profile.get_complexion_display|default:"N/A" }} / {{ profile.get_weight_display|default:"N/A" }}</div>
+                    </div>
+                </div>
+
+                <div class="section-divider">पारिवारिक एवं सामाजिक</div>
+
+                <div class="info-box">
+                    <span class="material-symbols-outlined">groups</span>
+                    <div>
+                        <div class="info-label">जाति / गोत्र</div>
+                        <div class="info-value">{{ profile.get_caste_display }} / {{ profile.get_gotra_display }}</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <span class="material-symbols-outlined">account_balance</span>
+                    <div>
+                        <div class="info-label">देव संख्या / मामा गोत्र</div>
+                        <div class="info-value">{{ profile.deity_number }} / {{ profile.maternal_uncle_gotra }}</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <span class="material-symbols-outlined">family_history</span>
+                    <div>
+                        <div class="info-label">पिता का नाम</div>
+                        <div class="info-value">{{ profile.father_name }}</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <span class="material-symbols-outlined">woman</span>
+                    <div>
+                        <div class="info-label">माता का नाम</div>
+                        <div class="info-value">{{ profile.mother_name }}</div>
+                    </div>
+                </div>
+
+                <div class="section-divider">शिक्षा एवं व्यवसाय</div>
+
                 <div class="info-box">
                     <span class="material-symbols-outlined">school</span>
                     <div>
                         <div class="info-label">शिक्षा</div>
-                        <div class="info-value">{{ profile.education }}</div>
+                        <div class="info-value">{{ profile.get_education_display|default:profile.education }}</div>
                     </div>
                 </div>
+
                 <div class="info-box">
                     <span class="material-symbols-outlined">work</span>
                     <div>
-                        <div class="info-label">व्यवसाय</div>
-                        <div class="info-value">{{ profile.occupation }}</div>
+                        <div class="info-label">व्यवसाय / आय</div>
+                        <div class="info-value">{{ profile.get_occupation_display }} / {{ profile.get_annual_income_display|default:"N/A" }}</div>
                     </div>
                 </div>
-                <div class="info-box">
+
+                <div class="info-box" style="grid-column: 1 / -1;">
                     <span class="material-symbols-outlined">location_on</span>
                     <div>
                         <div class="info-label">पता</div>
-                        <div class="info-value">{{ profile.city }}, {{ profile.district }}</div>
+                        <div class="info-value">{{ profile.address }}, {{ profile.city }}, {{ profile.get_district_display }}</div>
                     </div>
                 </div>
             </div>
@@ -270,10 +352,10 @@
                 {% endif %}
 
                 {% comment %} <a href="{{ whatsapp_url }}" target="_blank" class="btn-action whatsapp-btn">
-                    <span class="material-symbols-outlined">share</span> व्हाट्सएप पर साझा करें
+                    <i class="fab fa-whatsapp"></i> व्हाट्सएप पर साझा करें
                 </a> {% endcomment %}
 
-                <a href="{% url 'biodata_list' %}" class="flex items-center justify-center gap-2 text-sm font-bold text-gray-400 mt-4 hover:text-primary">
+                <a href="{% url 'biodata_list' %}" class="flex items-center justify-center gap-2 text-sm font-bold text-gray-400 mt-4 hover:text-red-600 transition-colors">
                     <span class="material-symbols-outlined text-sm">arrow_back</span> सूची में वापस जाएं
                 </a>
             </div>
@@ -281,8 +363,3 @@
     </div>
 </div>
 {% endblock %}
-
-
-
-
- 

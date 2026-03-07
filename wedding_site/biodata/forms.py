@@ -21,33 +21,96 @@ class CustomUserRegistrationForm(UserCreationForm):
             })
 
 
+
+
+from django import forms
+from .models import CommunityBiodata
+
 class CommunityBiodataForm(forms.ModelForm):
     class Meta:
         model = CommunityBiodata
         fields = '__all__'
         widgets = {
+            # Date and Time
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
-            'education': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
-            'family_status': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'birth_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             
-            # Text Inputs
+            # Textareas
+            'address': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+            'family_status': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+
+            # --- Dropdowns (Use forms.Select for choices to work) ---
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'blood_group': forms.Select(attrs={'class': 'form-control'}),
+            'marital_status': forms.Select(attrs={'class': 'form-control'}),
+            'caste': forms.Select(attrs={'class': 'form-control'}),
+            'gotra': forms.Select(attrs={'class': 'form-control'}),
+            'complexion': forms.Select(attrs={'class': 'form-control'}),
+            'height': forms.Select(attrs={'class': 'form-control'}),
+            'weight': forms.Select(attrs={'class': 'form-control'}),
+            'education': forms.Select(attrs={'class': 'form-control'}),
+            'occupation': forms.Select(attrs={'class': 'form-control'}),
+            'father_occupation': forms.Select(attrs={'class': 'form-control'}),
+            'annual_income': forms.Select(attrs={'class': 'form-control'}),
+            'state': forms.Select(attrs={'class': 'form-control'}),
+            'district': forms.Select(attrs={'class': 'form-control'}),
+
+
+            # --- Standard Text Inputs ---
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'caste': forms.TextInput(attrs={'class': 'form-control'}),
-            'gotra': forms.TextInput(attrs={'class': 'form-control'}),
+            'birth_place': forms.TextInput(attrs={'class': 'form-control'}),
             'deity_number': forms.TextInput(attrs={'class': 'form-control'}),
             'father_name': forms.TextInput(attrs={'class': 'form-control'}),
             'mother_name': forms.TextInput(attrs={'class': 'form-control'}),
             'maternal_uncle_gotra': forms.TextInput(attrs={'class': 'form-control'}),
-            'complexion': forms.TextInput(attrs={'class': 'form-control'}),
-            'height': forms.TextInput(attrs={'class': 'form-control'}),
-            'occupation': forms.TextInput(attrs={'class': 'form-control'}),
+            'work_location': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
             'guardian_mobile': forms.TextInput(attrs={'class': 'form-control'}),
-            'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'candidate_mobile': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
             
             # File Input Styling
             'profile_photo': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
         }
+
+
+
+
+
+
+
+
+
+
+
+
+# class CommunityBiodataForm(forms.ModelForm):
+#     class Meta:
+#         model = CommunityBiodata
+#         fields = '__all__'
+#         widgets = {
+#             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+#             'address': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+#             'education': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+#             'family_status': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            
+#             # Text Inputs
+#             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
+#             'caste': forms.TextInput(attrs={'class': 'form-control'}),
+#             'gotra': forms.TextInput(attrs={'class': 'form-control'}),
+#             'deity_number': forms.TextInput(attrs={'class': 'form-control'}),
+#             'father_name': forms.TextInput(attrs={'class': 'form-control'}),
+#             'mother_name': forms.TextInput(attrs={'class': 'form-control'}),
+#             'maternal_uncle_gotra': forms.TextInput(attrs={'class': 'form-control'}),
+#             'complexion': forms.TextInput(attrs={'class': 'form-control'}),
+#             'height': forms.TextInput(attrs={'class': 'form-control'}),
+#             'occupation': forms.TextInput(attrs={'class': 'form-control'}),
+#             'guardian_mobile': forms.TextInput(attrs={'class': 'form-control'}),
+#             'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
+            
+#             # File Input Styling
+#             'profile_photo': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+#         }
         
         
         

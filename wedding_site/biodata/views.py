@@ -89,30 +89,33 @@ def biodata_list(request):
 
 def biodata_create(request):
     if request.method == 'POST':
+        # request.FILES is required for profile_photo to work!
         form = CommunityBiodataForm(request.POST, request.FILES)
         if form.is_valid():
-            new_profile = form.save()
-            messages.success(request, f"Biodata for {new_profile.full_name} created successfully!")
-            return redirect('biodata_detail', pk=new_profile.pk) 
+            biodata = form.save(commit=False)
+            if request.user.is_authenticated:
+                biodata.user = request.user
+            biodata.save()
+            return redirect('biodata_list')
     else:
         form = CommunityBiodataForm()
-    
-    return render(request, 'biodata_form.html', {'form': form, 'title': 'Create New Biodata'})
+    return render(request, 'biodata_form.html', {'form': form})
+
+
 
 # --- UPDATE: Edit Existing Biodata ---
 
 def biodata_update(request, pk):
-    profile = get_object_or_404(CommunityBiodata, pk=pk)
+    obj = get_object_or_404(CommunityBiodata, pk=pk)
     if request.method == 'POST':
-        form = CommunityBiodataForm(request.POST, request.FILES, instance=profile)
+        form = CommunityBiodataForm(request.POST, request.FILES, instance=obj)
         if form.is_valid():
             form.save()
-            messages.info(request, "Biodata updated successfully.")
-            return redirect('biodata_detail', pk=profile.pk)
+            return redirect('biodata_detail', pk=obj.pk)
     else:
-        form = CommunityBiodataForm(instance=profile)
-    
-    return render(request, 'biodata_form.html', {'form': form, 'profile': profile, 'title': 'Update Biodata'})
+        form = CommunityBiodataForm(instance=obj)
+    return render(request, 'biodata_form.html', {'form': form})
+
 
 # --- DELETE: Remove Biodata ---
 
@@ -130,20 +133,33 @@ def biodata_detail(request, pk):
     profile = get_object_or_404(CommunityBiodata, pk=pk)
     target_user = profile.user
     
-    # Updated text to include new fields
-    share_text = f"""*गोंडवाना वैवाहिक ग्रुप (नि:शुल्क बायोडाटा)*
+    # Calculate Age for the share text
+    age = ""
+    if profile.date_of_birth:
+        age = f"({datetime.date.today().year - profile.date_of_birth.year} वर्ष)"
+
+    # Updated text to include ALL relevant community and physical fields
+    share_text = f"""*जनजाति वैवाहिक समूह (नि:शुल्क बायोडाटा)*
 *सरल क्रमांक: {profile.serial_number}*
-▶️ नाम: {profile.full_name}
+---------------------------------------
+▶️ नाम: {profile.full_name} {age}
 ▶️ लिंग: {profile.get_gender_display()}
-▶️ जन्मतिथि: {profile.date_of_birth} ({profile.birth_time or 'N/A'})
+▶️ जन्मतिथि: {profile.date_of_birth}
+▶️ जन्म समय: {profile.birth_time.strftime('%I:%M %p') if profile.birth_time else 'N/A'}
+▶️ कद: {profile.get_height_display() or 'N/A'}
+▶️ रक्त समूह: {profile.blood_group or 'N/A'}
 ▶️ वैवाहिक स्थिति: {profile.get_marital_status_display()}
-▶️ जाति/गोत्र: {profile.caste} / {profile.gotra}
+▶️ जाति/गोत्र: {profile.get_caste_display()} / {profile.get_gotra_display()}
 ▶️ देव संख्या: {profile.deity_number}
-▶️ शिक्षा: {profile.education}
-▶️ व्यवसाय: {profile.occupation}
-▶️ पता: {profile.city}, {profile.district}
+▶️ मामा गोत्र: {profile.maternal_uncle_gotra}
+▶️ शिक्षा: {profile.get_education_display() or profile.education}
+▶️ व्यवसाय: {profile.get_occupation_display()}
+▶️ वार्षिक आय: {profile.get_annual_income_display() if hasattr(profile, 'get_annual_income_display') else 'N/A'}
+▶️ स्थान: {profile.city}, {profile.get_district_display()} ({profile.state})
+---------------------------------------
 *(संपर्क हेतु एडमीन से संपर्क करें)*"""
     
+    # URL Encoding for WhatsApp
     whatsapp_url = f"https://wa.me/?text={urllib.parse.quote(share_text)}"
 
     return render(request, 'biodata_detail.html', {
@@ -152,14 +168,13 @@ def biodata_detail(request, pk):
         'target_user': target_user,
     })
 
-
 # def biodata_detail(request, pk):
 #     profile = get_object_or_404(CommunityBiodata, pk=pk)
     
 #     # The 'target_user' is now pulled from the model relationship
 #     target_user = profile.user 
     
-#     share_text = f"""*गोंडवाना वैवाहिक ग्रुप (नि:शुल्क बायोडाटा)*
+#     share_text = f"""*जनजाति वैवाहिक समूह (नि:शुल्क बायोडाटा)*
 # *सरल क्रमांक: {profile.serial_number}*
 # ▶️ नाम: {profile.full_name}
 # ▶️ लिंग: {profile.get_gender_display()}
@@ -410,7 +425,7 @@ def chats(request):
 # def biodata_detail(request, pk):
 #     profile = get_object_or_404(CommunityBiodata, pk=pk)
     
-#     share_text = f"""*गोंडवाना वैवाहिक ग्रुप (नि:शुल्क बायोडाटा)*
+#     share_text = f"""*जनजाति वैवाहिक समूह (नि:शुल्क बायोडाटा)*
 # *सरल क्रमांक {profile.serial_number}*
 # ▶️ नाम :- {profile.full_name}
 # ▶️ जाति :- {profile.caste}
@@ -542,7 +557,7 @@ def chats(request):
 # def biodata_detail(request, pk):
 #     profile = get_object_or_404(CommunityBiodata, pk=pk)
     
-#     share_text = f"""*गोंडवाना वैवाहिक ग्रुप (नि:शुल्क बायोडाटा)*
+#     share_text = f"""*जनजाति वैवाहिक समूह (नि:शुल्क बायोडाटा)*
 # *सरल क्रमांक {profile.serial_number}*
 # ▶️ नाम :- {profile.full_name}
 # ▶️ जाति :- {profile.caste}
