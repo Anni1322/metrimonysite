@@ -2,37 +2,57 @@
 {% block title %}बिहाव - गोंडवाना वैवाहिक सदस्य सूची{% endblock %}
 
 {% block content %}
-    <section class="relative min-h-[450px] flex items-center justify-center py-16 px-6">
+    <section class="relative min-h-[550px] flex items-center justify-center py-16 px-6">
         <div class="absolute inset-0 z-0">
             <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-black/40 z-10"></div>
             <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1974&auto=format&fit=crop');"></div>
         </div>
         
-        <div class="relative z-20 max-w-5xl w-full text-center">
+        <div class="relative z-20 max-w-6xl w-full text-center">
             <h2 class="text-white text-3xl md:text-5xl font-extrabold leading-tight mb-8">
                 अपना आदर्श <span class="text-saffron">जीवनसाथी</span> खोजें
             </h2>
 
-            <form method="GET" action="{% url 'biodata_list' %}" class="bg-white/10 backdrop-blur-xl p-2 rounded-2xl border border-white/20 shadow-2xl">
-                <div class="bg-white dark:bg-background-dark rounded-xl p-4 flex flex-wrap lg:flex-nowrap items-end gap-4">
+            <form method="GET" action="{% url 'biodata_list' %}" class="bg-white/10 backdrop-blur-xl p-3 rounded-3xl border border-white/20 shadow-2xl">
+                <div class="bg-white dark:bg-background-dark rounded-2xl p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                     
-                    <div class="flex-1 min-w-[200px] text-left">
+                    <div class="text-left">
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">नाम या क्रमांक</label>
-                        <input type="text" name="search" value="{{ search_query|default:'' }}" placeholder="उदा. राहुल या BIO-2026-0001" 
-                               class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-lg h-12 text-sm focus:ring-primary focus:border-primary">
+                        <input type="text" name="search" value="{{ search_query }}" placeholder="उदा. राहुल या BIO-..." 
+                               class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-xl h-12 text-sm focus:ring-primary focus:border-primary">
                     </div>
 
-                    <div class="flex-1 min-w-[200px] text-left">
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">गोत्र द्वारा फिल्टर</label>
-                        <input type="text" name="gotra" value="{{ gotra_filter|default:'' }}" placeholder="अपना गोत्र लिखें" 
-                               class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-lg h-12 text-sm focus:ring-primary focus:border-primary">
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">गोत्र लिखें</label>
+                        <input type="text" name="gotra" value="{{ gotra_filter }}" placeholder="उदा. मरकाम" 
+                               class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-xl h-12 text-sm focus:ring-primary focus:border-primary">
                     </div>
 
-                    <div class="flex gap-2 w-full lg:w-auto">
-                        <button type="submit" class="flex-1 lg:w-auto bg-primary hover:bg-primary/90 text-white font-bold h-12 px-8 rounded-lg flex items-center justify-center gap-2 transition-all">
-                            <span class="material-symbols-outlined">search</span> खोजें
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">जाति चुनें</label>
+                        <select name="caste" class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-xl h-12 text-sm focus:ring-primary focus:border-primary">
+                            <option value="">सभी जाति (All Caste)</option>
+                            {% for val, label in CASTE_CHOICES %}
+                                <option value="{{ val }}" {% if caste_filter == val %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">जिला चुनें</label>
+                        <select name="district" class="w-full border-gray-100 dark:border-white/10 dark:bg-white/5 rounded-xl h-12 text-sm focus:ring-primary focus:border-primary">
+                            <option value="">सभी जिला (All District)</option>
+                            {% for val, label in DISTRICT_CHOICES %}
+                                <option value="{{ val }}" {% if district_filter == val %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="lg:col-span-4 flex gap-3 mt-2">
+                        <button type="submit" class="flex-1 bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20">
+                            <span class="material-symbols-outlined">search</span> फ़िल्टर लागू करें
                         </button>
-                        <a href="{% url 'biodata_list' %}" class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 h-12 px-4 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-all" title="रीसेट करें">
+                        <a href="{% url 'biodata_list' %}" class="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 h-12 px-6 rounded-xl flex items-center justify-center hover:bg-gray-200 transition-all">
                             <span class="material-symbols-outlined">restart_alt</span>
                         </a>
                     </div>
@@ -44,18 +64,20 @@
     <section class="py-16 bg-white dark:bg-background-dark traditional-pattern relative">
         <div class="max-w-7xl mx-auto px-6">
             
-            <div class="flex justify-between items-end mb-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
                 <div>
-                    <h3 class="text-2xl md:text-3xl font-extrabold text-primary">आदिवासी समुदाय</h3>
-                    <p class="text-gray-500 text-sm mt-1">
-                        {% if search_query or gotra_filter %}
-                            खोज परिणाम: <span class="text-primary font-bold">"{{ search_query }} {{ gotra_filter }}"</span>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-primary">सदस्य प्रोफाइल</h3>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        {% if search_query or gotra_filter or district_filter or caste_filter %}
+                            <span class="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full italic">सक्रिय फ़िल्टर:</span>
+                            {% if search_query %}<span class="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-bold">{{ search_query }}</span>{% endif %}
+                            {% if district_filter %}<span class="text-xs bg-saffron/10 text-saffron px-3 py-1 rounded-full font-bold">{{ district_filter }}</span>{% endif %}
                         {% else %}
-                            सत्यापित गोंडवाना समुदाय के सदस्य
+                            <p class="text-gray-500 text-sm italic">सत्यापित समुदाय के सदस्य</p>
                         {% endif %}
-                    </p>
+                    </div>
                 </div>
-                <div class="hidden md:block text-xs font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-full border border-gray-100 dark:border-white/10">
+                <div class="text-xs font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-full border border-gray-100 dark:border-white/10">
                     कुल {{ profiles.paginator.count }} सदस्य
                 </div>
             </div>
@@ -74,7 +96,7 @@
                             </div>
                         {% endif %}
                         
-                        <div class="absolute top-4 right-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <div class="absolute top-4 right-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm border border-green-100">
                             <span class="material-symbols-outlined text-green-500 text-xs font-bold">verified</span>
                             <span class="text-[10px] font-extrabold text-gray-800 dark:text-gray-200">सत्यापित</span>
                         </div>
@@ -89,8 +111,11 @@
                             <h4 class="text-lg font-extrabold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                                 {{ profile.full_name }}
                             </h4>
-                            <div class="relative inline-block text-left">
-                                <a href="{% url 'biodata_edit' profile.pk %}" class="text-gray-400 hover:text-blue-500 transition-colors" title="एडिट करें">
+                            <div class="flex items-center gap-2">
+                                <a href="{% url 'biodata_matching' profile.pk %}" class="text-saffron hover:scale-110 transition-transform" title="मैच देखें">
+                                    <span class="material-symbols-outlined text-sm">partner_exchange</span>
+                                </a>
+                                <a href="{% url 'biodata_edit' profile.pk %}" class="text-gray-400 hover:text-blue-500 transition-colors">
                                     <span class="material-symbols-outlined text-sm">edit</span>
                                 </a>
                             </div>
@@ -99,28 +124,33 @@
                         <div class="space-y-2.5 mb-6 text-sm">
                             <div class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
                                 <span class="material-symbols-outlined text-saffron text-lg">category</span>
-                                <span>गोत्र: <b class="text-slate-800 dark:text-white">{{ profile.gotra }}</b></span>
+                                <span>जाति/गोत्र: <b class="text-slate-800 dark:text-white">{{ profile.get_caste_display }} / {{ profile.gotra }}</b></span>
                             </div>
                             <div class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
                                 <span class="material-symbols-outlined text-primary text-lg">school</span>
-                                <span class="truncate">शिक्षा: <b class="text-slate-800 dark:text-white">{{ profile.education|truncatechars:15 }}</b></span>
+                                <span class="truncate">शिक्षा: <b class="text-slate-800 dark:text-white">{{ profile.get_education_display|truncatechars:15 }}</b></span>
                             </div>
                             <div class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
                                 <span class="material-symbols-outlined text-gold text-lg">location_on</span>
-                                <span>शहर: <b class="text-slate-800 dark:text-white">{{ profile.city|default:"-" }}</b></span>
+                                <span>जिला: <b class="text-slate-800 dark:text-white">{{ profile.get_district_display|default:"-" }}</b></span>
                             </div>
                         </div>
 
-                        <a href="{% url 'biodata_detail' pk=profile.pk %}" class="mt-auto w-full bg-slate-100 dark:bg-slate-700 hover:bg-primary hover:text-white text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-300">
-                            विवरण देखें <span class="material-symbols-outlined text-sm">visibility</span>
-                        </a>
+                        <div class="grid grid-cols-2 gap-2 mt-auto">
+                            <a href="{% url 'biodata_detail' pk=profile.pk %}" class="bg-primary text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-primary/90 text-xs">
+                                विवरण <span class="material-symbols-outlined text-xs">visibility</span>
+                            </a>
+                            <a href="{% url 'biodata_matching' pk=profile.pk %}" class="bg-saffron/10 text-saffron hover:bg-saffron hover:text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 text-xs">
+                                मैच <span class="material-symbols-outlined text-xs">tempest</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 {% empty %}
                 <div class="col-span-full py-24 text-center">
                     <span class="material-symbols-outlined text-7xl text-gray-200 mb-4">search_off</span>
                     <h3 class="text-xl font-bold text-gray-500">कोई रिकॉर्ड नहीं मिला</h3>
-                    <p class="text-gray-400 mt-2">कृपया अपनी खोज बदलें या फिल्टर रीसेट करें।</p>
+                    <p class="text-gray-400 mt-2">कृपया फिल्टर रीसेट करें।</p>
                 </div>
                 {% endfor %}
             </div>
@@ -129,19 +159,19 @@
             <div class="mt-16 flex justify-center">
                 <nav class="flex items-center gap-2">
                     {% if profiles.has_previous %}
-                        <a href="?page={{ profiles.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if gotra_filter %}&gotra={{ gotra_filter }}{% endif %}" 
-                           class="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 hover:bg-primary hover:text-white transition-all">
+                        <a href="?page={{ profiles.previous_page_number }}&search={{ search_query }}&gotra={{ gotra_filter }}&district={{ district_filter }}&caste={{ caste_filter }}" 
+                           class="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-gray-200 text-gray-600 hover:bg-primary hover:text-white transition-all">
                             <span class="material-symbols-outlined">chevron_left</span>
                         </a>
                     {% endif %}
 
                     <span class="px-6 py-2 bg-primary text-white font-bold rounded-lg shadow-md">
-                        पेज {{ profiles.number }} / {{ profiles.paginator.num_pages }}
+                        {{ profiles.number }} / {{ profiles.paginator.num_pages }}
                     </span>
 
                     {% if profiles.has_next %}
-                        <a href="?page={{ profiles.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if gotra_filter %}&gotra={{ gotra_filter }}{% endif %}" 
-                           class="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 hover:bg-primary hover:text-white transition-all">
+                        <a href="?page={{ profiles.next_page_number }}&search={{ search_query }}&gotra={{ gotra_filter }}&district={{ district_filter }}&caste={{ caste_filter }}" 
+                           class="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-gray-200 text-gray-600 hover:bg-primary hover:text-white transition-all">
                             <span class="material-symbols-outlined">chevron_right</span>
                         </a>
                     {% endif %}
@@ -152,10 +182,6 @@
         </div>
     </section>
 {% endblock %}
-
-
-
-
 
 
 
@@ -214,7 +240,7 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-between items-end mb-12">
                 <div>
-                    <h3 class="text-2xl md:text-3xl font-extrabold text-primary">आदिवासी समुदाय</h3>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-primary">सदस्य प्रोफाइल</h3>
                     <p class="text-gray-500 text-sm mt-1">सत्यापित गोंडवाना समुदाय के सदस्य</p>
                 </div>
                 <div class="hidden md:block text-xs font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-4 py-2 rounded-full border border-gray-100 dark:border-white/10">
@@ -582,7 +608,7 @@
      {% include 'header.html' %}
     <h2>
         <i class="fas fa-leaf"></i>
-        जनजाति वैवाहिक समूह - सदस्य सूची
+        गोंडवाना वैवाहिक ग्रुप - सदस्य सूची
         <i class="fas fa-leaf"></i>
     </h2>
 
@@ -702,7 +728,7 @@
     </style>
 </head>
 <body>
-    <h2 style="text-align: center; color: #28a745;">🌿 जनजाति वैवाहिक समूह - सदस्य सूची 🌿</h2>
+    <h2 style="text-align: center; color: #28a745;">🌿 गोंडवाना वैवाहिक ग्रुप - सदस्य सूची 🌿</h2>
 
     <form method="GET" class="search-box">
         <input type="text" name="search" class="form-control" placeholder="Search Name or Serial No..." value="{{ search_query }}">

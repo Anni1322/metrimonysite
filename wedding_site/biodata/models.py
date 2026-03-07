@@ -33,15 +33,39 @@ class CommunityBiodata(models.Model):
         ('Korba', 'Korba (कोरबा)'), ('Raigarh', 'Raigarh (रायगढ़)'), ('Raipur', 'Raipur (रायपुर)'), ('Other', 'Other (अन्य)')
     ]
 
-    CASTE_CHOICES = [('Gond', 'गोंड'), ('Halba', 'हल्बा'), ('Kawar', 'कंवर'), ('Oraon', 'उरांव'), ('Other', 'अन्य')]
-    GOTRA_CHOICES = [('Nag', 'नाग (Nag)'), ('Bagh', 'बाघ (Bagh)'), ('Netam', 'नेताम (Netam)'), ('Markam', 'मरकाम (Markam)')]
+  
+    CASTE_CHOICES = [
+        ('Agariya', 'अगरिया'), ('Andh', 'अंध'), ('Baiga', 'बैगा'), ('Baina', 'बैना'),
+        ('Bharia', 'भारिया भूमिया'), ('Bhattra', 'भतरा'), ('Bhil', 'भील'),
+        ('Bhunjia', 'भुंजिया'), ('Gond', 'गोंड'), ('Halba', 'हल्बा'),
+        ('Kawar', 'कंवर'), ('Khairwar', 'खैरवार'), ('Kharia', 'खड़िया'),
+        ('Kol', 'कोल'), ('Korku', 'कोरकू'), ('Korwa', 'कोरवा'),
+        ('Nagesia', 'नगेसिया'), ('Oraon', 'उरांव'), ('Pao', 'पाव'),
+        ('Pardhan', 'परधान'), ('Saharaiya', 'सहरिया'), ('Sawar', 'सावरा'),
+    ]
+
+    GOTRA_CHOICES = [
+        ('Nag', 'नाग (Nag)'), ('Bagh', 'बाघ (Bagh)'), ('Kachhua', 'कछुआ (Kachhua)'),
+        ('Hans', 'हंस (Hans)'), ('Bhaisa', 'भैंसा (Bhaisa)'), ('Karait', 'करैत (Karait)'),
+        ('Netam', 'नेताम (Netam)'), ('Markam', 'मरकाम (Markam)'), ('Tekam', 'टेकाम (Tekam)'),
+        ('Lakra', 'लकरा (Lakra)'), ('Minj', 'मिंज (Minj)'), ('Tirkey', 'तिर्की (Tirkey)'),
+        ('Ekka', 'एक्का (Ekka)'), ('Kujur', 'कुजूर (Kujur)'), ('Toppo', 'टोप्पो (Toppo)'),
+        ('Prahlad', 'प्रहलाद (Prahlad)'), ('Vashishtha', 'वशिष्ठ (Vashishtha)'),
+        ('Kasyap', 'कश्यप (Kasyap)'),
+    ]
+
+
+
+
+
 
     # --- Fields ---
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, verbose_name="User Account")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, verbose_name="User Account",editable=False)
+    
     serial_number = models.CharField(max_length=50, unique=True, verbose_name="सरल क्रमांक", editable=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True, verbose_name="सक्रिय है?", editable=False)
+    is_active = models.BooleanField(default=False, verbose_name="सक्रिय है?", editable=False)
 
     full_name = models.CharField(max_length=255, verbose_name="पूरा नाम (Full Name)")
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name="लिंग (Gender)", null=True)

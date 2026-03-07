@@ -4,32 +4,39 @@
             <div class="bg-primary text-white p-1.5 rounded-lg">
                 <span class="material-symbols-outlined text-2xl">temple_hindu</span>
             </div>
-            <h1 class="text-2xl font-extrabold tracking-tight text-primary" >
-                <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'biodata_list' %}">बिहाव</a>
-                </h1>
+            <h1 class="text-2xl font-extrabold tracking-tight text-primary">
+                <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'pages_index' %}">बिहाव</a>
+            </h1>
         </div>
+
         <nav class="hidden md:flex items-center gap-8">
-            {% comment %} <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'pages_premium' %}">प्रीमियम प्लान</a> {% endcomment %}
-            {% comment %} <a class="text-sm font-bold hover:text-primary transition-colors" href="#">सफलता की कहानियाँ</a> {% endcomment %}
-            {% comment %} <a class="text-sm font-bold hover:text-primary transition-colors" href="#">हमारे बारे में</a> {% endcomment %}
             <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'biodata_list' %}">सूची</a>
-            <a class="text-sm font-bold hover:text-primary transition-colors"  href="{% url 'biodata_create' %}">जोड़ें</a>
-            {% comment %} <a class="text-sm font-bold hover:text-primary transition-colors"  href="{% url 'biodata_matching' %}">संपर्क</a> {% endcomment %}
-            <a class="text-sm font-bold hover:text-primary transition-colors"  href="{% url 'pages_account_settings' %}">सेटिंग्स</a>
+                
+            {% if user.is_authenticated and user_profile %}
+                <a class="text-sm font-bold text-saffron hover:text-primary transition-colors flex items-center gap-1" 
+                href="{% url 'biodata_matching' user_profile.pk %}">
+                    <span class="material-symbols-outlined text-lg">favorite</span>
+                    मेरे मैच
+                </a>
+            {% endif %}
 
-
+            <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'biodata_create' %}">जोड़ें</a>
+            <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'pages_dashboard' %}">एडमिन कंट्रोल</a>
+            <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'pages_account_settings' %}">सेटिंग्स</a>
         </nav>
+
         <div class="flex items-center gap-3">
-            <button class="px-5 py-2 text-sm font-bold border border-transparent hover:border-primary/20 rounded-lg dark:text-white transition-all">
-                 <a class="text-sm font-bold hover:text-primary transition-colors"  href="{% url 'pages_login' %}"> लॉगिन</a>
-            </button>
-            <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-md shadow-primary/20">
-                <a class="text-sm font-bold hover:text-primary transition-colors"  href="{% url 'pages_register' %}"> रजिस्टर</a>
-            </button>
+            {% if user.is_authenticated %}
+                <a class="text-sm font-bold text-gray-500 hover:text-primary transition-colors" href="{% url 'pages_logout' %}">लॉगआउट</a>
+            {% else %}
+                <button class="px-5 py-2 text-sm font-bold border border-transparent hover:border-primary/20 rounded-lg dark:text-white transition-all">
+                    <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'pages_login' %}">लॉगिन</a>
+                </button>
+                <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-md shadow-primary/20">
+                    <a class="text-sm font-bold hover:text-primary transition-colors" href="{% url 'pages_register' %}">रजिस्टर</a>
+                </button>
+            {% endif %}
         </div>
     </div>
 </header>
-
-
-
  

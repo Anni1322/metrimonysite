@@ -31,6 +31,7 @@ urlpatterns = [
     path('delete/<int:pk>/', views.biodata_delete, name='biodata_delete'),
     
     # Matching Logic
+    # path('matching/', views.biodata_matching, name='biodata_matching'),
     path('matching/<int:pk>/', views.biodata_matching, name='biodata_matching'),
 
 

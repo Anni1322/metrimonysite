@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-
+from django.http import HttpResponseForbidden
 
 # --- Register View ---
 
@@ -47,7 +47,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "आप सफलतापूर्वक लॉग आउट हो गए हैं।")
-    return redirect('home')
+    return redirect('pages_index')
 
 
 
@@ -58,45 +58,91 @@ def home(request):
     recent_profiles = CommunityBiodata.objects.filter(is_active=True).order_by('-created_at')[:4]
     return render(request, 'index.html', {'recent_profiles': recent_profiles})
 
+# @login_required
+# def biodata_list(request):
+#     profiles = CommunityBiodata.objects.filter(is_active=True).order_by('-id')  
+    
+#     search_query = request.GET.get('search', '')
+#     gotra_filter = request.GET.get('gotra', '')
+
+#     if search_query:
+#         profiles = profiles.filter(
+#             Q(full_name__icontains=search_query) | 
+#             Q(serial_number__icontains=search_query) |
+#             Q(district__icontains=search_query)
+#         )
+    
+#     if gotra_filter:
+#         profiles = profiles.filter(gotra__icontains=gotra_filter)
+
+#     paginator = Paginator(profiles, 12)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+
+#     context = {
+#         'profiles': page_obj,
+#         'search_query': search_query,
+#         'gotra_filter': gotra_filter
+#     }
+#     return render(request, 'biodata_list.html', context)
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.db.models import Q
+from .models import CommunityBiodata
+
 def biodata_list(request):
-    profiles = CommunityBiodata.objects.filter(is_active=True).order_by('-id')  
-    
+    # Capture all search and filter parameters
     search_query = request.GET.get('search', '')
-    gotra_filter = request.GET.get('gotra', '')
+    gotra_query = request.GET.get('gotra', '')
+    district_query = request.GET.get('district', '')
+    caste_query = request.GET.get('caste', '')
 
+    # Base Queryset
+    profiles_list = CommunityBiodata.objects.filter(is_active=True)
+
+    # Filtering Logic
     if search_query:
-        profiles = profiles.filter(
+        profiles_list = profiles_list.filter(
             Q(full_name__icontains=search_query) | 
-            Q(serial_number__icontains=search_query) |
-            Q(district__icontains=search_query)
+            Q(serial_number__icontains=search_query)
         )
-    
-    if gotra_filter:
-        profiles = profiles.filter(gotra__icontains=gotra_filter)
+    if gotra_query:
+        profiles_list = profiles_list.filter(gotra__icontains=gotra_query)
+    if district_query:
+        profiles_list = profiles_list.filter(district=district_query)
+    if caste_query:
+        profiles_list = profiles_list.filter(caste=caste_query)
 
-    paginator = Paginator(profiles, 12)
+    # Pagination
+    paginator = Paginator(profiles_list, 12)
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    profiles = paginator.get_page(page_number)
 
+    # Passing choices to template for the dropdowns
     context = {
-        'profiles': page_obj,
+        'profiles': profiles,
         'search_query': search_query,
-        'gotra_filter': gotra_filter
+        'gotra_filter': gotra_query,
+        'district_filter': district_query,
+        'caste_filter': caste_query,
+        'DISTRICT_CHOICES': CommunityBiodata.DISTRICT_CHOICES,
+        'CASTE_CHOICES': CommunityBiodata.CASTE_CHOICES,
     }
+    
     return render(request, 'biodata_list.html', context)
 
-# --- CREATE: Add New Biodata ---
 
+
+# --- CREATE: Add New Biodata ---
+# @login_required
 def biodata_create(request):
     if request.method == 'POST':
-        # request.FILES is required for profile_photo to work!
         form = CommunityBiodataForm(request.POST, request.FILES)
         if form.is_valid():
             biodata = form.save(commit=False)
-            if request.user.is_authenticated:
-                biodata.user = request.user
+            biodata.user = request.user   # Important
             biodata.save()
-            return redirect('biodata_list')
+            return redirect('pages_member_profile_detail')
     else:
         form = CommunityBiodataForm()
     return render(request, 'biodata_form.html', {'form': form})
@@ -104,7 +150,6 @@ def biodata_create(request):
 
 
 # --- UPDATE: Edit Existing Biodata ---
-
 def biodata_update(request, pk):
     obj = get_object_or_404(CommunityBiodata, pk=pk)
     if request.method == 'POST':
@@ -168,45 +213,22 @@ def biodata_detail(request, pk):
         'target_user': target_user,
     })
 
-# def biodata_detail(request, pk):
-#     profile = get_object_or_404(CommunityBiodata, pk=pk)
-    
-#     # The 'target_user' is now pulled from the model relationship
-#     target_user = profile.user 
-    
-#     share_text = f"""*जनजाति वैवाहिक समूह (नि:शुल्क बायोडाटा)*
-# *सरल क्रमांक: {profile.serial_number}*
-# ▶️ नाम: {profile.full_name}
-# ▶️ लिंग: {profile.get_gender_display()}
-# ▶️ जन्मतिथि: {profile.date_of_birth}
-# ▶️ जाति/गोत्र: {profile.caste} / {profile.gotra}
-# ▶️ व्यवसाय: {profile.occupation}
-# ▶️ स्थान: {profile.city}, {profile.district}
-# *(संपर्क हेतु एडमीन से संपर्क करें)*"""
-    
-#     whatsapp_url = f"https://wa.me/?text={urllib.parse.quote(share_text)}"
-
-#     return render(request, 'biodata_detail.html', {
-#         'profile': profile,
-#         'whatsapp_url': whatsapp_url,
-#         'target_user': target_user, # This is used in the template for the Chat button
-#     })
-
 # user profile
 
 @login_required
 def user_profile_settings(request):
-    # Try to get the biodata linked to the logged-in user
-    # Note: This requires a ForeignKey(User) in your CommunityBiodata model
-    # For now, we'll fetch the most recent one or a specific one for the demo
-    profile = CommunityBiodata.objects.filter(full_name=request.user.get_full_name()).first()
-    
+    profile = CommunityBiodata.objects.filter(user=request.user).first()
     if request.method == 'POST':
         form = CommunityBiodataForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form.save()
+            biodata = form.save(commit=False)
+            biodata.user = request.user
+            biodata.save()
+
             messages.success(request, "आपका प्रोफाइल सफलतापूर्वक अपडेट कर दिया गया है।")
+
             return redirect('pages_account_settings')
+
     else:
         form = CommunityBiodataForm(instance=profile)
 
@@ -215,21 +237,49 @@ def user_profile_settings(request):
         'profile': profile
     })
 
-
 # --- MANAGE: Admin Dashboard Logic ---
 # @login_required
-def dashboard(request):
-    # Fetch all profiles (including inactive ones) for management
-    profiles_list = CommunityBiodata.objects.all().order_by('-id')
+# def dashboard(request):
+#     # Fetch all profiles (including inactive ones) for management
+#     profiles_list = CommunityBiodata.objects.all().order_by('-id')
     
-    # Search logic for the dashboard table
+#     # Search logic for the dashboard table
+#     query = request.GET.get('q')
+#     if query:
+#         profiles_list = profiles_list.filter(
+#             Q(full_name__icontains=query) | Q(serial_number__icontains=query)
+#         )
+
+#     # Statistics
+#     stats = {
+#         'total': CommunityBiodata.objects.count(),
+#         'active': CommunityBiodata.objects.filter(is_active=True).count(),
+#         'inactive': CommunityBiodata.objects.filter(is_active=False).count(),
+#     }
+
+#     return render(request, 'userDashboard.html', {
+#         'profiles': profiles_list,
+#         'stats': stats
+#     })
+
+
+
+
+@login_required
+def dashboard(request):
+
+    if not request.user.is_staff:
+        return HttpResponseForbidden("आपको इस पेज को देखने की अनुमति नहीं है।")
+
+    profiles_list = CommunityBiodata.objects.all().order_by('-id')
+
     query = request.GET.get('q')
     if query:
         profiles_list = profiles_list.filter(
-            Q(full_name__icontains=query) | Q(serial_number__icontains=query)
+            Q(full_name__icontains=query) |
+            Q(serial_number__icontains=query)
         )
 
-    # Statistics
     stats = {
         'total': CommunityBiodata.objects.count(),
         'active': CommunityBiodata.objects.filter(is_active=True).count(),
@@ -242,24 +292,122 @@ def dashboard(request):
     })
 
 
-
 # --- Matching Logic ---
 
+# def biodata_matching(request, pk):
+#     profile = get_object_or_404(CommunityBiodata, pk=pk)
+    
+#     # Exclude same gotra (community rule) and different gender
+#     opposite_gender = 'F' if profile.gender == 'M' else 'M'
+    
+#     suggestions = CommunityBiodata.objects.filter(
+#         gender=opposite_gender,
+#         is_active=True
+#     ).exclude(gotra=profile.gotra).order_by('?')[:6]
+
+#     return render(request, 'biodata_matching.html', {
+#         'base_profile': profile,
+#         'suggestions': suggestions
+#     })
+ 
+ 
+ 
+# from django.db.models import Q, Case, When, Value, IntegerField
+# from django.shortcuts import render, get_object_or_404
+# from .models import CommunityBiodata
+# import datetime
+
+# def biodata_matching(request, pk):
+#     # 1. Get the base profile
+#     profile = get_object_or_404(CommunityBiodata, pk=pk)
+#     # 2. Basic Requirements
+#     opposite_gender = 'F' if profile.gender == 'M' else 'M'
+    
+#     # 3. Age Logic (Optional but recommended)
+#     # Suggestions usually look for +/- 5 to 7 years of age
+#     current_year = datetime.date.today().year
+#     profile_age = current_year - profile.date_of_birth.year
+    
+#     # 4. Start Filtering
+#     suggestions = CommunityBiodata.objects.filter(
+#         is_active=True,
+#         gender=opposite_gender,
+#         caste=profile.caste  # Hard requirement: Same Caste
+#     ).exclude(
+#         gotra=profile.gotra  # Community Rule: Different Gotra
+#     ).exclude(
+#         pk=profile.pk        # Don't suggest self
+#     )
+
+#     # 5. Advanced Weightage Logic (Scoring)
+#     # We use Case/When to "score" profiles so the best matches appear first
+#     suggestions = suggestions.annotate(
+#         match_score=Case(
+#             # Priority 1: Same District (Score 10)
+#             When(district=profile.district, then=Value(10)),
+#             # Priority 2: Similar Education Level (Score 5)
+#             When(education=profile.education, then=Value(5)),
+#             # Priority 3: Same State (Score 3)
+#             When(state=profile.state, then=Value(3)),
+#             default=Value(0),
+#             output_field=IntegerField(),
+#         )
+#     )
+
+#     # 6. Refine by Age (Strict filtering is risky, so we just prioritize)
+#     if profile.gender == 'M':
+#         # Men usually look for same age or younger
+#         suggestions = suggestions.filter(
+#             date_of_birth__year__gte=profile.date_of_birth.year - 2, # Max 2 years older
+#             date_of_birth__year__lte=profile.date_of_birth.year + 10 # Up to 10 years younger
+#         )
+#     else:
+#         # Women usually look for same age or older
+#         suggestions = suggestions.filter(
+#             date_of_birth__year__lte=profile.date_of_birth.year + 2, # Max 2 years younger
+#             date_of_birth__year__gte=profile.date_of_birth.year - 10 # Up to 10 years older
+#         )
+
+#     # 7. Order by Score (Highest first) then Randomize to keep it fresh
+#     suggestions = suggestions.order_by('-match_score', '?')[:8]
+
+#     return render(request, 'biodata_matching.html', {
+#         'base_profile': profile,
+#         'suggestions': suggestions,
+#         'match_count': suggestions.count()
+#     }) 
+    
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import CommunityBiodata
+
+@login_required
 def biodata_matching(request, pk):
+    # 1. Get the current user's profile
     profile = get_object_or_404(CommunityBiodata, pk=pk)
+    user_profile = CommunityBiodata.objects.filter(user=request.user).first()
     
-    # Exclude same gotra (community rule) and different gender
-    opposite_gender = 'F' if profile.gender == 'M' else 'M'
+    if not user_profile:
+        # If the user hasn't created a biodata yet, show an empty state or redirect
+        return render(request, 'biodata_matching.html', {'no_profile': True})
+
+    # 2. Matching Logic
+    opposite_gender = 'F' if user_profile.gender == 'M' else 'M'
     
-    suggestions = CommunityBiodata.objects.filter(
-        gender=opposite_gender,
+    matches = CommunityBiodata.objects.filter(
+        caste=user_profile.caste,      # Same Caste
+        gender=opposite_gender,         # Opposite Gender
         is_active=True
-    ).exclude(gotra=profile.gotra).order_by('?')[:6]
+    ).exclude(
+        gotra=user_profile.gotra       # Different Gotra (Rule)
+    ).order_by('-created_at')
 
     return render(request, 'biodata_matching.html', {
-        'base_profile': profile,
-        'suggestions': suggestions
-    })
+        'user_profile': user_profile,
+        'matches': matches,
+        'match_count': matches.count()
+    })    
+    
     
 
 def success_stories(request):
@@ -270,16 +418,13 @@ def success_stories(request):
 
 @login_required
 def member_profile_detail(request):
-    # Fetch the profile linked to the logged-in user
-    # Adjust the filter based on how you link Users to Biodata
-    profile = CommunityBiodata.objects.filter(email=request.user.email).first()
-    
+    profile = CommunityBiodata.objects.filter(user=request.user).first()
     if not profile:
         messages.warning(request, "कृपया पहले अपना बायोडाटा जोड़ें।")
         return redirect('biodata_create')
-
-    # Pass the 'profile' to the template
-    return render(request, 'memberProfileDetail.html', {'profile': profile})
+    return render(request, 'memberProfileDetail.html', {
+        'profile': profile
+    })
 
   
   

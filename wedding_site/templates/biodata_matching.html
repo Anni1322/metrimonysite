@@ -1,75 +1,92 @@
 {% extends "base.html" %}
-{% block title %}बिहाव - आपके लिए सुझाव{% endblock %}
+{% block title %}मेरे मैच - जीवनसाथी की तलाश{% endblock %}
 
 {% block content %}
-
-<main class="max-w-7xl mx-auto px-6 py-12">
-    <div class="text-center mb-12">
-        <div class="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mb-4">
-            <span class="material-symbols-outlined text-4xl text-primary">favorite</span>
+<div class="min-h-screen bg-slate-50 dark:bg-background-dark py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+        
+        {% if no_profile %}
+        <div class="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-dashed border-gray-300">
+            <span class="material-symbols-outlined text-8xl text-gray-300">account_box</span>
+            <h2 class="text-2xl font-bold mt-4">आपने अभी तक अपना बायोडाटा नहीं बनाया है</h2>
+            <p class="text-gray-500 mb-8">मैच देखने के लिए पहले अपना प्रोफाइल पूरा करें।</p>
+            <a href="{% url 'biodata_create' %}" class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primary/90 transition-all">
+                बायोडाटा बनाएं
+            </a>
         </div>
-        <h1 class="text-3xl md:text-4xl font-black text-slate-900">आदर्श मैच सुझाव</h1>
-        <p class="text-slate-500 mt-2 font-medium">हमने <span class="text-primary font-bold">{{ base_profile.full_name }}</span> के लिए ये प्रोफाइल चुनी हैं</p>
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for match in suggestions %}
-        <div class="bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-xl shadow-primary/5 hover:-translate-y-2 transition-all duration-500">
-            <div class="relative h-64">
-                {% if match.profile_photo %}
-                    <img src="{{ match.profile_photo.url }}" class="w-full h-full object-cover">
-                {% else %}
-                    <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
-                        <span class="material-symbols-outlined text-6xl">person</span>
-                    </div>
-                {% endif %}
-                
-                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full border border-primary/20 shadow-lg">
-                    <p class="text-[10px] font-black text-primary uppercase leading-none">Match Score</p>
-                    <p class="text-lg font-black text-slate-800 leading-none mt-1">94%</p>
-                </div>
-            </div>
-
-            <div class="p-6">
-                <h3 class="text-xl font-extrabold text-slate-900 mb-4">{{ match.full_name }}</h3>
-                
-                <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
-                    <div class="flex items-center gap-2 text-slate-500">
-                        <span class="material-symbols-outlined text-saffron text-lg">fingerprint</span>
-                        <span>{{ match.gotra }}</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-slate-500">
-                        <span class="material-symbols-outlined text-gold text-lg">wb_sunny</span>
-                        <span>{{ match.deity_number }} देव</span>
-                    </div>
-                </div>
-
-                <a href="{% url 'biodata_detail' pk=match.pk %}" class="block w-full text-center py-3 bg-primary/5 hover:bg-primary text-primary hover:text-white font-bold rounded-xl transition-all border border-primary/10">
-                    प्रोफाइल देखें
-                </a>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-span-full text-center py-20">
-            <p class="text-slate-400 font-bold italic">फिलहाल कोई मैच नहीं मिला। कृपया बाद में देखें।</p>
-        </div>
-        {% endfor %}
-    </div>
-
-    <div class="mt-16 p-8 bg-gradient-to-r from-slate-900 to-slate-800 rounded-[2.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-8">
-        <div class="flex items-center gap-6">
-            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
-                <span class="material-symbols-outlined text-3xl text-gold">psychology</span>
-            </div>
+        {% else %}
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
-                <h4 class="text-xl font-bold">क्या आप और मैच चाहते हैं?</h4>
-                <p class="text-white/60 text-sm">हमारा एआई आपके गोत्र और देव संख्या के आधार पर सटीक सुझाव देता है।</p>
+                <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
+                    नमस्ते, <span class="text-primary">{{ user_profile.full_name }}</span>!
+                </h2>
+                <p class="text-gray-500 font-medium mt-1">
+                    आपके <b class="text-saffron">{{ user_profile.get_caste_display }}</b> समुदाय में <b class="text-primary">{{ match_count }}</b> संभावित जीवनसाथी मिले हैं।
+                </p>
+            </div>
+            <div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-2 pr-6 rounded-full shadow-sm border border-gray-100">
+                <img src="{{ user_profile.profile_photo.url|default:'/static/default.jpg' }}" class="w-12 h-12 rounded-full object-cover border-2 border-primary">
+                <div class="text-sm">
+                    <p class="font-bold leading-none">आपका प्रोफाइल</p>
+                    <p class="text-xs text-gray-400">{{ user_profile.serial_number }}</p>
+                </div>
             </div>
         </div>
-        <button class="bg-gold hover:bg-yellow-500 text-slate-900 font-black px-10 py-4 rounded-2xl transition-all shadow-lg shadow-gold/20">
-            प्रीमियम एक्टिवेट करें
-        </button>
-    </div>
-</main>
 
+        <div class="flex flex-wrap gap-3 mb-10">
+            <span class="px-4 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20">जाति: {{ user_profile.get_caste_display }}</span>
+            <span class="px-4 py-1.5 bg-saffron/10 text-saffron text-xs font-bold rounded-full border border-saffron/20">विपरीत गोत्र: {{ user_profile.get_gotra_display }} को छोड़कर</span>
+            <span class="px-4 py-1.5 bg-blue-100 text-blue-600 text-xs font-bold rounded-full border border-blue-200">लिंग: {% if user_profile.gender == 'M' %}महिला{% else %}पुरुष{% endif %}</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {% for match in matches %}
+            <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-lg border border-gray-100 dark:border-slate-700 hover:shadow-2xl transition-all group">
+                <div class="relative h-64">
+                    {% if match.profile_photo %}
+                        <img src="{{ match.profile_photo.url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                        <div class="w-full h-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-6xl text-gray-300">person</span>
+                        </div>
+                    {% endif %}
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black text-primary uppercase shadow-sm">
+                        {{ match.get_district_display }}
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h4 class="text-lg font-bold text-slate-800 dark:text-white mb-1">{{ match.full_name }}</h4>
+                    <p class="text-xs text-gray-400 font-bold mb-4 uppercase tracking-tighter">{{ match.get_education_display }} | {{ match.get_occupation_display }}</p>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-50 dark:bg-slate-900 p-2 rounded-xl">
+                            <p class="text-[8px] text-gray-400 font-bold uppercase">गोत्र</p>
+                            <p class="text-xs font-bold">{{ match.get_gotra_display }}</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900 p-2 rounded-xl">
+                            <p class="text-[8px] text-gray-400 font-bold uppercase">कद</p>
+                            <p class="text-xs font-bold">{{ match.get_height_display }}</p>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'biodata_detail' match.pk %}" class="mt-6 w-full py-3 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all">
+                        पूरा विवरण देखें <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full py-20 text-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png" class="w-32 mx-auto opacity-20 grayscale">
+                <h3 class="text-xl font-bold text-gray-400 mt-4">फिलहाल कोई नया मैच नहीं मिला</h3>
+                <p class="text-gray-400">जैसे ही नए सदस्य जुड़ेंगे, वे यहाँ दिखाई देंगे।</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
 {% endblock %}
