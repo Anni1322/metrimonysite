@@ -29,7 +29,7 @@ class CommunityBiodata(models.Model):
         ('Balod', 'Balod (बालोद)'), ('Baloda Bazar', 'Baloda Bazar (बलौदा बाजार)'), ('Balrampur', 'Balrampur (बालरामपुर)'),
         ('Bastar', 'Bastar (बस्तर)'), ('Bemetara', 'Bemetara (बेमेतरा)'), ('Bijapur', 'Bijapur (बीजापुर)'),
         ('Bilaspur', 'Bilaspur (बिलासपुर)'), ('Dantewada', 'Dantewada (दंतेवाड़ा)'), ('Dhamtari', 'Dhamtari (धमतरी)'),
-        ('Durg', 'Durg (दुर्ग)'), ('Gariaband', 'Gariaband (गरियाबंद)'), ('Janjgir-Champa', 'Janjgir-Champa (जांजगीर-चांपा)'),
+        ('Durg', 'Durg (दुर्ग)'), ('Gariaband', 'Gariaband (गरियाबंद)'), ('Janjgir-Champa', 'Janjgir-Champa (जांजगीर-चांपा)'),('Jashpur', 'Jashpur (जशपुर)'),
         ('Korba', 'Korba (कोरबा)'), ('Raigarh', 'Raigarh (रायगढ़)'), ('Raipur', 'Raipur (रायपुर)'), ('Other', 'Other (अन्य)')
     ]
 

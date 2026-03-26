@@ -8,14 +8,14 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding: 20px;
+        padding: 10px;
     }
 
     .container {
         background: white;
         width: 100%;
         max-width: 900px;
-        padding: 40px;
+        padding: 20px;
         border-radius: 12px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         position: relative;
@@ -36,18 +36,19 @@
         text-align: center;
         color: #10b981;
         font-weight: 700;
-        font-size: 2rem;
-        margin-bottom: 30px;
+        font-size: 1.75rem;
+        margin-bottom: 25px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
+        flex-wrap: wrap;
     }
 
     .form-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
     }
 
     .form-group {
@@ -55,18 +56,25 @@
     }
 
     label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #059669;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #059669;
+        font-size: 0.95rem;
+        flex-wrap: wrap;
+    }
+
+    label i {
+        min-width: 18px;
+        text-align: center;
+        flex-shrink: 0;
     }
 
     .form-control {
         width: 100%;
-        padding: 12px 16px;
+        padding: 11px 14px;
         border: 2px solid #e5e7eb;
         border-radius: 8px;
         box-sizing: border-box;
@@ -88,30 +96,36 @@
 
     .error-message {
         color: #dc2626;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin-top: 5px;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 5px;
+    }
+
+    .error-message i {
+        flex-shrink: 0;
+        margin-top: 2px;
     }
 
     .submit-btn {
         grid-column: 1 / -1;
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
-        padding: 15px 30px;
+        padding: 13px 24px;
         border: none;
         border-radius: 12px;
         cursor: pointer;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
         transition: all 0.3s ease;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        margin-top: 20px;
+        gap: 8px;
+        margin-top: 15px;
+        width: 100%;
     }
 
     .submit-btn:hover {
@@ -119,22 +133,142 @@
         box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
     }
 
+    .submit-btn:active {
+        transform: translateY(-1px);
+    }
+
+    /* Tablet (768px and below) */
     @media (max-width: 768px) {
         .main-content {
-            padding: 15px;
+            padding: 12px;
         }
+        
         .container {
-            padding: 20px;
-            max-width: 100%;
+            padding: 18px;
+            border-radius: 10px;
         }
+
         h2 {
             font-size: 1.5rem;
-            flex-direction: column;
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+
+        h2 i {
+            font-size: 1.3rem;
+        }
+
+        .form-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        label {
+            font-size: 0.9rem;
             gap: 5px;
         }
+
+        .form-control {
+            padding: 10px 12px;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        .submit-btn {
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            gap: 6px;
+        }
+    }
+
+    /* Mobile (480px and below) */
+    @media (max-width: 480px) {
+        .main-content {
+            padding: 8px;
+        }
+
+        .container {
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            gap: 6px;
+        }
+
+        h2 i {
+            font-size: 1.1rem;
+        }
+
         .form-grid {
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            gap: 4px;
+        }
+
+        label i {
+            min-width: 16px;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+
+        .error-message {
+            font-size: 0.8rem;
+        }
+
+        .submit-btn {
+            padding: 11px 18px;
+            font-size: 0.9rem;
+            gap: 5px;
+            margin-top: 12px;
+        }
+
+        .submit-btn i {
+            font-size: 0.95rem;
+        }
+    }
+
+    /* Small phones (360px and below) */
+    @media (max-width: 360px) {
+        .main-content {
+            padding: 6px;
+        }
+
+        .container {
+            padding: 12px;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .form-grid {
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.8rem;
+        }
+
+        .form-control {
+            padding: 9px 10px;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            padding: 10px 16px;
+            font-size: 0.85rem;
         }
     }
 </style>

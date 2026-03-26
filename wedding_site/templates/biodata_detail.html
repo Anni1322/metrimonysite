@@ -5,195 +5,119 @@
 <style>
     :root {
         --primary-red: #d41132;
-        --saffron: #FF9933;
-        --card-bg: #ffffff;
         --text-main: #1f2937;
-        --border-color: #f3f4f6;
+        --label-color: #6b7280;
     }
 
     .biodata-container {
-        perspective: 1000px;
-        padding: 40px 20px;
+        padding: 30px 15px;
+        background-color: #f3f4f6;
+        min-height: 100vh;
     }
 
     .biodata-card {
-        background: var(--card-bg);
-        border-radius: 24px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-        border: 1px solid var(--border-color);
-        max-width: 850px;
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        max-width: 550px;
         margin: 0 auto;
         overflow: hidden;
-        position: relative;
     }
 
-    /* Traditional Header Style */
+    /* Header Section */
     .bio-header {
-        background: linear-gradient(135deg, var(--primary-red), #b00e2a);
-        padding: 30px;
+        background: var(--primary-red);
+        padding: 20px;
         text-align: center;
         color: white;
     }
 
     .bio-header h2 {
-        font-weight: 800;
-        letter-spacing: 1px;
+        font-size: 1.5rem;
         margin-bottom: 5px;
-        font-size: 1.8rem;
+        font-weight: 700;
     }
 
-    .serial-badge {
-        background: rgba(255,255,255,0.2);
-        padding: 4px 15px;
-        border-radius: 99px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: inline-block;
-        backdrop-filter: blur(5px);
-    }
-
-    /* Photo Section */
-    .bio-photo-section {
-        margin-top: -60px;
+    /* Photo Styling */
+    .photo-wrapper {
         text-align: center;
-        position: relative;
-        z-index: 10;
+        margin-top: 20px;
     }
 
     .bio-img {
-        width: 180px;
-        height: 180px;
+        width: 140px;
+        height: 140px;
         object-fit: cover;
-        border-radius: 30px;
-        border: 6px solid white;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        background: #f3f4f6;
+        border-radius: 12px;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .bio-img-placeholder {
-        width: 180px;
-        height: 180px;
-        background: #f9fafb;
-        border: 2px dashed #d1d5db;
-        border-radius: 30px;
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #9ca3af;
-    }
-
-    /* Section Title */
-    .section-divider {
-        grid-column: 1 / -1;
-        display: flex;
-        align-items: center;
-        margin: 20px 0 10px;
-        color: var(--primary-red);
-        font-weight: 800;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .section-divider::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: #eee;
-        margin-left: 15px;
-    }
-
-    /* Fields Layout */
+    /* One Line List Styling */
     .bio-content {
-        padding: 40px;
+        padding: 25px;
     }
 
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-
-    .info-box {
-        background: #fcfcfc;
-        border: 1px solid #f8f8f8;
-        padding: 12px 18px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        transition: all 0.3s ease;
-    }
-
-    .info-box:hover {
-        background: #fffafa;
-        border-color: var(--primary-red);
-        transform: translateY(-2px);
-    }
-
-    .info-box i, .info-box .material-symbols-outlined {
+    .section-title {
         color: var(--primary-red);
-        font-size: 1.4rem;
-        width: 28px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        margin: 20px 0 10px 0;
+        border-bottom: 1px solid #fee2e2;
+        padding-bottom: 5px;
+    }
+
+    .info-row {
+        display: flex;
+        padding: 6px 0;
+        border-bottom: 1px transition-colors solid #f9fafb;
+        font-size: 1.05rem;
     }
 
     .info-label {
-        font-size: 0.7rem;
-        color: #9ca3af;
-        text-transform: uppercase;
         font-weight: 700;
-        letter-spacing: 0.5px;
-        line-height: 1;
-        margin-bottom: 4px;
+        color: var(--text-main);
+        min-width: 140px; /* Adjust this to align the ":-" */
+        display: inline-block;
     }
 
     .info-value {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--text-main);
-        line-height: 1.2;
+        color: #374151;
+        font-weight: 500;
+        flex: 1;
     }
 
-    /* Action Buttons */
-    .action-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 30px;
+    /* Contact & Action */
+    .contact-box {
+        background: #fff5f5;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        margin-top: 25px;
     }
 
-    .btn-action {
-        padding: 16px;
-        border-radius: 16px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-        text-decoration: none;
+    .phone-number {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--primary-red);
+        display: block;
     }
 
-    .whatsapp-btn {
-        background: #25D366;
-        color: white;
-    }
-
-    .whatsapp-btn:hover {
-        background: #1eb956;
-        box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
-    }
-
-    .chat-btn {
+    .btn-chat {
+        display: block;
         background: var(--primary-red);
         color: white;
+        text-align: center;
+        padding: 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        margin-top: 15px;
     }
 
-    @media (max-width: 640px) {
-        .info-grid { grid-template-columns: 1fr; }
-        .bio-content { padding: 25px; }
-        .bio-header h2 { font-size: 1.4rem; }
+    @media (max-width: 480px) {
+        .info-label { min-width: 110px; font-size: 0.95rem; }
+        .info-value { font-size: 0.95rem; }
     }
 </style>
 {% endblock %}
@@ -202,161 +126,98 @@
 <div class="biodata-container">
     <div class="biodata-card">
         <div class="bio-header">
-            <h2>जनजाति वैवाहिक समूह</h2>
-            <div class="serial-badge">सरल क्रमांक: {{ profile.serial_number }}</div>
+            <h2>बायोडाटा</h2>
+            <p style="font-size: 0.8rem; opacity: 0.9;">क्रमांक: {{ profile.serial_number }}</p>
         </div>
 
-        <div class="bio-photo-section">
+        <div class="photo-wrapper">
             {% if profile.profile_photo %}
-                <img src="{{ profile.profile_photo.url }}" class="bio-img" alt="{{ profile.full_name }}">
+                <img src="{{ profile.profile_photo.url }}" class="bio-img">
             {% else %}
-                <div class="bio-img-placeholder">
-                    <span class="material-symbols-outlined">no_photography</span>
-                    <span class="text-[10px] font-bold mt-1">फोटो उपलब्ध नहीं</span>
+                <div style="height: 140px; width: 140px; background: #eee; margin: auto; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #999;">
+                    No Photo
                 </div>
             {% endif %}
         </div>
 
         <div class="bio-content">
-            <div class="info-grid">
-                <div class="section-divider">व्यक्तिगत जानकारी</div>
-                
-                <div class="info-box">
-                    <span class="material-symbols-outlined">person</span>
-                    <div>
-                        <div class="info-label">नाम</div>
-                        <div class="info-value">{{ profile.full_name }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">cake</span>
-                    <div>
-                        <div class="info-label">जन्मतिथि / समय</div>
-                        <div class="info-value">{{ profile.date_of_birth|date:"d/m/Y" }} {% if profile.birth_time %}({{ profile.birth_time|time:"h:i A" }}){% endif %}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">wc</span>
-                    <div>
-                        <div class="info-label">लिंग / वैवाहिक स्थिति</div>
-                        <div class="info-value">{{ profile.get_gender_display }} / {{ profile.get_marital_status_display }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">bloodtype</span>
-                    <div>
-                        <div class="info-label">रक्त समूह</div>
-                        <div class="info-value">{{ profile.get_blood_group_display|default:"N/A" }}</div>
-                    </div>
-                </div>
-
-                <div class="section-divider">शारीरिक विवरण</div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">straighten</span>
-                    <div>
-                        <div class="info-label">कद (Height)</div>
-                        <div class="info-value">{{ profile.get_height_display|default:"N/A" }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">palette</span>
-                    <div>
-                        <div class="info-label">रंग / वजन</div>
-                        <div class="info-value">{{ profile.get_complexion_display|default:"N/A" }} / {{ profile.get_weight_display|default:"N/A" }}</div>
-                    </div>
-                </div>
-
-                <div class="section-divider">पारिवारिक एवं सामाजिक</div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">groups</span>
-                    <div>
-                        <div class="info-label">जाति / गोत्र</div>
-                        <div class="info-value">{{ profile.get_caste_display }} / {{ profile.get_gotra_display }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">account_balance</span>
-                    <div>
-                        <div class="info-label">देव संख्या / मामा गोत्र</div>
-                        <div class="info-value">{{ profile.deity_number }} / {{ profile.maternal_uncle_gotra }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">family_history</span>
-                    <div>
-                        <div class="info-label">पिता का नाम</div>
-                        <div class="info-value">{{ profile.father_name }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">woman</span>
-                    <div>
-                        <div class="info-label">माता का नाम</div>
-                        <div class="info-value">{{ profile.mother_name }}</div>
-                    </div>
-                </div>
-
-                <div class="section-divider">शिक्षा एवं व्यवसाय</div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">school</span>
-                    <div>
-                        <div class="info-label">शिक्षा</div>
-                        <div class="info-value">{{ profile.get_education_display|default:profile.education }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <span class="material-symbols-outlined">work</span>
-                    <div>
-                        <div class="info-label">व्यवसाय / आय</div>
-                        <div class="info-value">{{ profile.get_occupation_display }} / {{ profile.get_annual_income_display|default:"N/A" }}</div>
-                    </div>
-                </div>
-
-                <div class="info-box" style="grid-column: 1 / -1;">
-                    <span class="material-symbols-outlined">location_on</span>
-                    <div>
-                        <div class="info-label">पता</div>
-                        <div class="info-value">{{ profile.address }}, {{ profile.city }}, {{ profile.get_district_display }}</div>
-                    </div>
-                </div>
+            <h3 class="section-title">व्यक्तिगत विवरण</h3>
+            
+            <div class="info-row">
+                <span class="info-label">नाम :-</span>
+                <span class="info-value">{{ profile.full_name }}</span>
             </div>
 
-            <div class="mt-8 p-5 rounded-2xl bg-red-50 border border-red-100 text-center">
-                <p class="text-xs font-bold text-red-400 uppercase tracking-widest mb-1">संपर्क नंबर</p>
-                <p class="text-xl font-black text-red-600">
+            <div class="info-row">
+                <span class="info-label">जन्मतिथि :-</span>
+                <span class="info-value">{{ profile.date_of_birth|date:"d/m/Y" }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">लिंग :-</span>
+                <span class="info-value">{{ profile.get_gender_display }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">वैवाहिक स्थिति :-</span>
+                <span class="info-value">{{ profile.get_marital_status_display }}</span>
+            </div>
+
+            <h3 class="section-title">पारिवारिक जानकारी</h3>
+
+            <div class="info-row">
+                <span class="info-label">जाति/गोत्र :-</span>
+                <span class="info-value">{{ profile.get_caste_display }} / {{ profile.get_gotra_display }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">पिता का नाम :-</span>
+                <span class="info-value">{{ profile.father_name }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">माता का नाम :-</span>
+                <span class="info-value">{{ profile.mother_name }}</span>
+            </div>
+
+            <h3 class="section-title">शिक्षा एवं कार्य</h3>
+
+            <div class="info-row">
+                <span class="info-label">शिक्षा :-</span>
+                <span class="info-value">{{ profile.get_education_display|default:profile.education }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">व्यवसाय :-</span>
+                <span class="info-value">{{ profile.get_occupation_display }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">पता :-</span>
+                <span class="info-value">{{ profile.address }}, {{ profile.city }}</span>
+            </div>
+
+            <div class="contact-box">
+                <p style="margin:0; font-size: 0.8rem; color: #888;">संपर्क नंबर के लिए</p>
+                प्रशासक से संपर्क करें(admin): 6261652196
+                {% comment %} <span class="phone-number">
                     {% if user.is_authenticated %} 
                         {{ profile.guardian_mobile }} 
                     {% else %} 
-                        संपर्क के लिए लॉगिन करें 
+                        लॉगिन करें
                     {% endif %}
-                </p>
-                <p class="text-[10px] text-red-400 mt-2">*(रिश्ते की बात हेतु एडमिन से संपर्क कर सकते हैं)*</p>
+                </span> {% endcomment %}
             </div>
 
-            <div class="action-group">
-                {% if target_user and target_user != request.user %}
-                <a href="{% url 'pages_chats' %}?user_id={{ target_user.id }}" class="btn-action chat-btn">
-                    <span class="material-symbols-outlined">chat</span> सीधे संदेश भेजें
-                </a>
-                {% endif %}
+            {% comment %} {% if target_user and target_user != request.user %}
+            <a href="{% url 'pages_chats' %}?user_id={{ target_user.id }}" class="btn-chat">
+                चैट करें
+            </a>
+            {% endif %} {% endcomment %}
 
-                {% comment %} <a href="{{ whatsapp_url }}" target="_blank" class="btn-action whatsapp-btn">
-                    <i class="fab fa-whatsapp"></i> व्हाट्सएप पर साझा करें
-                </a> {% endcomment %}
-
-                <a href="{% url 'biodata_list' %}" class="flex items-center justify-center gap-2 text-sm font-bold text-gray-400 mt-4 hover:text-red-600 transition-colors">
-                    <span class="material-symbols-outlined text-sm">arrow_back</span> सूची में वापस जाएं
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{% url 'biodata_list' %}" style="color: #9ca3af; text-decoration: none; font-size: 0.85rem;">
+                   ← वापस सूची पर जाएं
                 </a>
             </div>
         </div>

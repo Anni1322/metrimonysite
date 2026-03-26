@@ -2,14 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages  # Added for user feedback
+from django.http import HttpResponseForbidden, JsonResponse
+from django.contrib.auth import login, authenticate, logout, get_user_model
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import *
 from .forms import *
 import urllib.parse
+import datetime
 from django.contrib.auth.decorators import login_required
-
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.http import HttpResponseForbidden
 
 # --- Register View ---
 
@@ -50,13 +51,63 @@ def logout_view(request):
     return redirect('pages_index')
 
 
+# --- Forgot Password View ---
+def forgot_password(request):
+    reset_mode = False
+    email = None
+    
+    if request.method == 'POST':
+        if 'reset_password' in request.POST:
+            # Step 2: Handle password reset
+            email = request.POST.get('email', '')
+            new_password = request.POST.get('new_password', '')
+            confirm_password = request.POST.get('confirm_password', '')
+            
+            # Validate passwords
+            if new_password != confirm_password:
+                messages.error(request, "❌ पासवर्ड मेल नहीं खाते! कृपया फिर से प्रयास करें।")
+                reset_mode = True
+            elif len(new_password) < 8:
+                messages.error(request, "❌ पासवर्ड कम से कम 8 वर्ण का होना चाहिए।")
+                reset_mode = True
+            else:
+                # Update password
+                try:
+                    user = User.objects.get(email=email)
+                    user.set_password(new_password)
+                    user.save()
+                    messages.success(request, "✅ पासवर्ड सफलतापूर्वक अपडेट किया गया! अब लॉगिन करें।")
+                    return redirect('pages_login')
+                except User.DoesNotExist:
+                    messages.error(request, "❌ ईमेल नहीं मिला। कृपया फिर से प्रयास करें।")
+                    reset_mode = True
+        else:
+            # Step 1: Email verification
+            email = request.POST.get('email', '').strip()
+            
+            if not email:
+                messages.error(request, "❌ कृपया ईमेल दर्ज करें।")
+            else:
+                # Check if email exists
+                try:
+                    user = User.objects.get(email=email)
+                    messages.success(request, f"✅ ईमेल सत्यापित! {email}")
+                    reset_mode = True
+                except User.DoesNotExist:
+                    messages.error(request, "❌ यह ईमेल हमारे सिस्टम में पंजीकृत नहीं है। कृपया एक नया खाता बनाएं।")
+    
+    return render(request, 'forgot_password.html', {
+        'reset_mode': reset_mode,
+        'email': email
+    })
+
 
 # --- READ: Home & List View ---
-
+@login_required
 def home(request):
     # Fetch recent profiles for the home page
     recent_profiles = CommunityBiodata.objects.filter(is_active=True).order_by('-created_at')[:4]
-    return render(request, 'index.html', {'recent_profiles': recent_profiles})
+    return render(request, 'biodata_list.html', {'recent_profiles': recent_profiles})
 
 # @login_required
 # def biodata_list(request):
@@ -90,6 +141,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import CommunityBiodata
 
+@login_required
 def biodata_list(request):
     # Capture all search and filter parameters
     search_query = request.GET.get('search', '')
@@ -142,7 +194,8 @@ def biodata_create(request):
             biodata = form.save(commit=False)
             biodata.user = request.user   # Important
             biodata.save()
-            return redirect('pages_member_profile_detail')
+            messages.success(request, "बायोडाटा सफलतापूर्वक जोड़ा गया! प्रशासक से संपर्क करें: 9174857382")
+            return redirect('biodata_list')
     else:
         form = CommunityBiodataForm()
     return render(request, 'biodata_form.html', {'form': form})
@@ -156,7 +209,8 @@ def biodata_update(request, pk):
         form = CommunityBiodataForm(request.POST, request.FILES, instance=obj)
         if form.is_valid():
             form.save()
-            return redirect('biodata_detail', pk=obj.pk)
+            messages.success(request, "बायोडाटा सफलतापूर्वक अपडेट किया गया! प्रशासक से संपर्क करें: 9174857382")
+            return redirect('biodata_list')
     else:
         form = CommunityBiodataForm(instance=obj)
     return render(request, 'biodata_form.html', {'form': form})
@@ -273,12 +327,20 @@ def dashboard(request):
 
     profiles_list = CommunityBiodata.objects.all().order_by('-id')
 
+    # Search filter
     query = request.GET.get('q')
     if query:
         profiles_list = profiles_list.filter(
             Q(full_name__icontains=query) |
             Q(serial_number__icontains=query)
         )
+
+    # Status filter
+    status_filter = request.GET.get('status', 'all')
+    if status_filter == 'active':
+        profiles_list = profiles_list.filter(is_active=True)
+    elif status_filter == 'hidden':
+        profiles_list = profiles_list.filter(is_active=False)
 
     stats = {
         'total': CommunityBiodata.objects.count(),
@@ -288,7 +350,26 @@ def dashboard(request):
 
     return render(request, 'userDashboard.html', {
         'profiles': profiles_list,
-        'stats': stats
+        'stats': stats,
+        'status_filter': status_filter,
+        'search_query': query
+    })
+
+
+@login_required
+def toggle_profile_status(request, pk):
+    """Toggle the status of a profile between active and hidden"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden("आपको इस अनुमति नहीं है।")
+    
+    profile = get_object_or_404(CommunityBiodata, pk=pk)
+    profile.is_active = not profile.is_active
+    profile.save()
+    
+    return JsonResponse({
+        'success': True,
+        'is_active': profile.is_active,
+        'message': 'Active' if profile.is_active else 'Hidden'
     })
 
 
@@ -430,26 +511,6 @@ def member_profile_detail(request):
   
 # --- Static / Simple Page Views ---
 
-def search_page(request):
-    return render(request, 'SearchResult.html')
-
-def account_settings(request):
-    # This is the one causing the error!
-    return render(request, 'accountSetting.html')
-
-def chats(request):
-    return render(request, 'chats.html')
-
- 
-def premium_plan(request):
-    return render(request, 'premiumPlan.html')
-
-def register(request):
-    return render(request, 'registration.html')    
-    
-    
-    
-    
 # 1. Search Results: Logic to filter profiles based on user input
 def search_page(request):
     query = request.GET.get('q', '')
@@ -463,6 +524,10 @@ def search_page(request):
         )
     return render(request, 'SearchResult.html', {'results': results, 'query': query})
 
+# Account Settings
+def account_settings(request):
+    return render(request, 'accountSetting.html')
+
 # 2. Premium Plans: Static data for your membership tiers
 def premium_plan(request):
     plans = [
@@ -470,6 +535,9 @@ def premium_plan(request):
         {'name': 'Gold', 'price': '₹499', 'features': ['Unlimited Profiles', 'Contact Details', 'Verified Badge']},
     ]
     return render(request, 'premiumPlan.html', {'plans': plans})
+
+def register(request):
+    return render(request, 'registration.html')
 
 # 3. Chats: Requires login to protect community privacy
 

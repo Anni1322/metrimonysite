@@ -12,8 +12,23 @@
                 प्रवेश करें
             </button>
         </form>
-        <div class="mt-6 text-center">
-            <a href="{% url 'pages_register' %}" class="text-sm text-gray-500 hover:text-primary">नया खाता बनाना चाहते हैं?</a>
+        <div class="mt-6 text-center space-y-4">
+            <div>
+                <a href="{% url 'pages_register' %}" class="text-sm text-gray-500 hover:text-primary transition-colors">नया खाता बनाना चाहते हैं?</a>
+            </div>
+            <div class="relative py-2">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">या</span>
+                </div>
+            </div>
+            <div>
+                <a href="{% url 'forgot_password' %}" class="inline-block px-6 py-2.5 bg-gradient-to-r from-saffron to-saffron/80 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-saffron/30 transition-all">
+                    <span class="material-symbols-outlined align-middle mr-2">lock_reset</span> पासवर्ड भूल गए?
+                </a>
+            </div>
         </div>
     </div>
 </div>

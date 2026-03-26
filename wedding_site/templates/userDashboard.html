@@ -27,12 +27,40 @@
 
         <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
             
-            <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 bg-gray-50/50">
-                <form method="GET" class="relative w-full md:w-96">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                    <input type="text" name="q" placeholder="Search by name or serial..." 
-                           class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-primary focus:border-primary">
+            <div class="p-6 border-b border-gray-100 flex flex-col gap-4 bg-gray-50/50">
+                <!-- Search Bar -->
+                <form method="GET" class="flex flex-col md:flex-row gap-4">
+                    <div class="relative flex-grow">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                        <input type="text" name="q" placeholder="Search by name or serial..." 
+                               value="{{ search_query }}"
+                               class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-primary focus:border-primary">
+                    </div>
+                    <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined">search</span> Search
+                        </span>
+                    </button>
                 </form>
+
+                <!-- Status Filter -->
+                <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                    <label class="font-semibold text-gray-700 sm:min-w-fit">Filter by Status:</label>
+                    <div class="flex gap-2 flex-wrap">
+                        <a href="?status=all{% if search_query %}&q={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 rounded-lg font-semibold transition-all {% if not status_filter or status_filter == 'all' %}bg-primary text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+                            All Profiles
+                        </a>
+                        <a href="?status=active{% if search_query %}&q={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 {% if status_filter == 'active' %}bg-green-500 text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+                            <span class="material-symbols-outlined">check_circle</span> Active
+                        </a>
+                        <a href="?status=hidden{% if search_query %}&q={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 {% if status_filter == 'hidden' %}bg-red-500 text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+                            <span class="material-symbols-outlined">visibility_off</span> Hidden
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="overflow-x-auto">
@@ -69,11 +97,18 @@
                                 <p class="text-xs text-gray-400">{{ profile.caste }}</p>
                             </td>
                             <td class="px-6 py-4">
-                                {% if profile.is_active %}
-                                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Active</span>
-                                {% else %}
-                                    <span class="bg-gray-100 text-gray-500 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Hidden</span>
-                                {% endif %}
+                                <div class="flex items-center gap-3">
+                                    {% if profile.is_active %}
+                                        <span class="bg-green-100 text-green-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Active</span>
+                                    {% else %}
+                                        <span class="bg-gray-100 text-gray-500 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Hidden</span>
+                                    {% endif %}
+                                    <button onclick="toggleProfileStatus({{ profile.pk }})" 
+                                            title="Toggle Status"
+                                            class="p-1.5 text-gray-400 hover:text-blue-600 transition-colors rounded-md hover:bg-blue-50">
+                                        <span class="material-symbols-outlined text-lg">{% if profile.is_active %}visibility_off{% else %}visibility{% endif %}</span>
+                                    </button>
+                                </div>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500">
                                 {{ profile.created_at|date:"d M, Y" }}
@@ -118,6 +153,36 @@ function confirmDelete(pk, name) {
         document.body.appendChild(form);
         form.submit();
     }
+}
+
+function toggleProfileStatus(pk) {
+    // Show loading state
+    const button = event.target.closest('button');
+    button.disabled = true;
+    button.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span>';
+    
+    // Send AJAX request
+    fetch(`/biodata/toggle-status/${pk}/`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload the page to refresh the status
+            location.reload();
+        } else {
+            alert('Error: ' + (data.message || 'Could not toggle status'));
+            button.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error toggling profile status');
+        button.disabled = false;
+    });
 }
 </script>
 {% endblock %}

@@ -7,12 +7,14 @@ urlpatterns = [
     path('register/', views.register_view, name='pages_register'),
     path('login/', views.login_view, name='pages_login'),
     path('logout/', views.logout_view, name='pages_logout'),
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
     
         
     # --- 1. Core CRUD Logic (Manage Profiles) ---
 
     # Homepage
-    path('', views.home, name='home'),
+    # path('', views.home, name='home'),
+    
     path('index/', views.home, name='pages_index'),
 
     # List (Search & Filter)
@@ -39,6 +41,9 @@ urlpatterns = [
     
     # Dashboard (Now using views.dashboard for stats)
     path('dashboard/', views.dashboard, name='pages_dashboard'),
+    
+    # Toggle Profile Status
+    path('toggle-status/<int:pk>/', views.toggle_profile_status, name='toggle_profile_status'),
     
     # Account & Settings
     path('account/settings/', views.user_profile_settings, name='pages_account_settings'),
